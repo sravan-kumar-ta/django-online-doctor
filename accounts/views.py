@@ -2,10 +2,10 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, FormView
+from django.views.generic import CreateView, ListView, FormView, UpdateView
 
-from accounts.forms import DoctorRegistrationForm, PatientRegistrationForm, LoginForm
-from accounts.models import Doctors, CustomUser, Specialities
+from accounts.forms import CustomUserCreationForm, LoginForm, SpecialisedDoctorForm
+from accounts.models import CustomUser, Specialities
 
 
 class HomeView(ListView):
@@ -14,54 +14,25 @@ class HomeView(ListView):
     template_name = 'home.html'
 
 
-class DoctorRegistrationView(CreateView):
-    model = Doctors
-    form_class = DoctorRegistrationForm
+class CustomUserCreationView(CreateView):
+    model = CustomUser
+    form_class = CustomUserCreationForm
     template_name = "auth/register.html"
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("login")
 
     def form_valid(self, form):
-        first_name = form.cleaned_data.pop("first_name")
-        last_name = form.cleaned_data.pop("last_name")
-        password2 = form.cleaned_data.pop("password2")
-        username = form.cleaned_data.pop("username")
-        email = form.cleaned_data.pop("email")
-        user = CustomUser.objects.create_user(
-            first_name=first_name,
-            last_name=last_name,
-            password=password2,
-            username=username,
-            email=email,
-            role="doctor"
-        )
-        user.save()
-        form.instance.role = user
+        role = self.request.POST.get("role")
+        form.instance.role = role
         return super().form_valid(form)
 
 
-class PatientsRegistrationView(CreateView):
-    model = Doctors
-    form_class = PatientRegistrationForm
-    template_name = "auth/register.html"
-    success_url = reverse_lazy("home")
-
-    def form_valid(self, form):
-        first_name = form.cleaned_data.pop("first_name")
-        last_name = form.cleaned_data.pop("last_name")
-        password2 = form.cleaned_data.pop("password2")
-        username = form.cleaned_data.pop("username")
-        email = form.cleaned_data.pop("email")
-        user = CustomUser.objects.create_user(
-            first_name=first_name,
-            last_name=last_name,
-            password=password2,
-            username=username,
-            email=email,
-            role="patient"
-        )
-        user.save()
-        form.instance.role = user
-        return super().form_valid(form)
+def add_doctor_specialisation(request, d_id):
+    specialised_in_id = request.POST.get("specialisation")
+    specialised_in = Specialities.objects.get(id=specialised_in_id)
+    doctor = CustomUser.objects.get(id=d_id)
+    doctor.specialized_in = specialised_in
+    doctor.save()
+    return redirect('home')
 
 
 class LoginView(FormView):
