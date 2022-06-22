@@ -30,8 +30,8 @@ class Doctors(models.Model):
         ("male", "Male"),
         ("female", "Female"),
     )
-    role = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    profile_image = models.ImageField(upload_to='files/doctors')
+    role = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="doctors")
+    profile_image = models.ImageField(upload_to='files/doctors', null=True)
     gender = models.CharField(choices=gender_options, max_length=20)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)

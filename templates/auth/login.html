@@ -1,0 +1,48 @@
+{% extends 'auth/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-4 col-lg-6 col-md-6 border border-info rounded shadow px-5 py-4 mt-auto" style="position: absolute; top:50%; transform: translate(0, -50%)">
+        <h2 class="text-center text-primary">Login as <span>Doctor</span></h2>
+        <hr>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="container alert fade show" role="alert" style="color: #FF6363; border: 2px solid; margin-top: 20px">
+                    {{ message }}
+                    <button type="button" class="close-btn" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-flex justify-content-center mb-3 text-success">
+                <div class="mx-3">
+                    <input type="radio" id="doctor" style="cursor: pointer" name="user" value="1">
+                    <label for="doctor" style="cursor: pointer">Doctor</label>
+                </div>
+                <div>
+                    <input checked type="radio" id="patient" style="cursor: pointer" name="user" value="2">
+                    <label for="patient" style="cursor: pointer">Patient</label>
+                </div>
+            </div>
+            <table class="m-auto" cellpadding="5">
+                {% for field in form %}
+                    <tr class="d-flex justify-content-between align-items-center">
+                        <td>{{ field.label_tag }}</td>
+                        <td>{{ field }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <div class="text-center">
+                <input type="submit" class="btn btn-primary mt-4 mb-2 px-5" value="Login"><br>
+                <a href="{% url 'register' %}" class="text-decoration-none">
+                    <span>Create an account</span>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
