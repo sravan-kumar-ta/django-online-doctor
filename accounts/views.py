@@ -1,17 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, FormView, UpdateView
+from django.views.generic import CreateView, FormView
 
-from accounts.forms import CustomUserCreationForm, LoginForm, SpecialisedDoctorForm
+from accounts.forms import CustomUserCreationForm, LoginForm
 from accounts.models import CustomUser, Specialities
-
-
-class HomeView(ListView):
-    model = Specialities
-    context_object_name = "specialities"
-    template_name = 'home.html'
 
 
 class CustomUserCreationView(CreateView):
@@ -23,6 +17,8 @@ class CustomUserCreationView(CreateView):
     def form_valid(self, form):
         role = self.request.POST.get("role")
         form.instance.role = role
+        print(form.cleaned_data.get("password2"))
+        print(form.cleaned_data.get("username"))
         return super().form_valid(form)
 
 
@@ -32,7 +28,7 @@ def add_doctor_specialisation(request, d_id):
     doctor = CustomUser.objects.get(id=d_id)
     doctor.specialized_in = specialised_in
     doctor.save()
-    return redirect('home')
+    return redirect('patient:home')
 
 
 class LoginView(FormView):
@@ -46,10 +42,10 @@ class LoginView(FormView):
         user = authenticate(self.request, username=username, password=password)
         if user_data == "1" and user and user.role == "doctor":
             login(self.request, user)
-            return redirect('home')
+            return redirect('patient:home')
         elif user_data == "2" and user and user.role == "patient":
             login(self.request, user)
-            return redirect('home')
+            return redirect('patient:home')
         else:
             messages.error(self.request, "Invalid credentials..!")
             return redirect('login')
@@ -57,12 +53,4 @@ class LoginView(FormView):
 
 def sign_out_view(request):
     logout(request)
-    return redirect('home')
-
-
-def doctors(request):
-    return render(request, "doctors.html")
-
-
-def profile(request):
-    return render(request, "profile.html")
+    return redirect('patient:home')

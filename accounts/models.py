@@ -1,15 +1,20 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.urls import reverse
 
 
 class Specialities(models.Model):
-    special = models.CharField(max_length=50)
+    special = models.CharField(max_length=120, unique=True)
+    slug = models.SlugField(max_length=120, unique=True)
 
     def __str__(self):
         return self.special
 
     class Meta:
         verbose_name_plural = "Specialities"
+
+    def get_url(self):
+        return reverse('patient:doctors', args=[self.slug])
 
 
 class CustomUser(AbstractUser):
