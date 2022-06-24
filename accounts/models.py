@@ -30,6 +30,7 @@ class CustomUser(AbstractUser):
     role = models.CharField(choices=role_options, default="admin", max_length=30)
     profile_image = models.ImageField(upload_to='files/doctors', null=True)
     gender = models.CharField(choices=gender_options, max_length=20)
+    age = models.PositiveIntegerField(null=True)
     specialized_in = models.ForeignKey(Specialities, on_delete=models.CASCADE, null=True)
 
     def __str__(self):

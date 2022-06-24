@@ -5,92 +5,63 @@
 <div class="container px-4 py-5" id="icon-grid">
     <h2 class="pb-2 border-bottom">Profile</h2>
 
-    <div class="row px-5 ">
-            <div class="col-md-6 col-lg-3 px-md-3">
-                <a href="" class="text-decoration-none">
-                    <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-info">Account</h5>
-                </a>
+    <div class="row px-5">
+            <div class="col-lg-4 px-md-3 mt-3">
+                <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-warning">Account</h5>
                 <div>
                     <table cellpadding="5" class="m-auto">
                         <tr class="d-flex justify-content-between">
                             <td>Name:</td>
-                            <td>Sravan kumar</td>
+                            <td>{{ request.user.first_name }} {{ request.user.last_name }}</td>
                         </tr>
                         <tr class="d-flex justify-content-between">
-                            <td>age:</td>
-                            <td>28</td>
+                            <td>Username:</td>
+                            <td>{{ request.user.username }}</td>
                         </tr>
                         <tr class="d-flex justify-content-between">
                             <td>Gender:</td>
-                            <td>Male</td>
+                            <td style="text-transform: capitalize;">{{ request.user.gender }}</td>
+                        </tr>
+                        <tr class="d-flex justify-content-between">
+                            <td>Email:</td>
+                            <td>{{ request.user.email }}</td>
                         </tr>
                         <tr class="d-flex justify-content-between">
                             <td>Phone:</td>
                             <td>8086183640</td>
                         </tr>
                     </table>
-                    <a href="" class="text-decoration-none">
-                        <h6 class="text-center border-bottom mx-5 px-3 py-2 shadow rounded border-warning">Update</h6>
+                    <a href="{% url 'patient:patient-update' request.user.id %}" class="text-decoration-none">
+                        <h6 class="text-center border mx-5 px-3 py-2 shadow rounded border-info">Update</h6>
                     </a>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3 px-md-3">
-                <a href="" class="text-decoration-none">
-                    <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-info">Family members</h5>
-                </a>
+            <div class="col-lg-4 px-md-3 mt-3">
+                <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-warning">Family members</h5>
                 <div>
                     <table cellpadding="5" class="m-auto">
-                        <tr class="d-flex justify-content-between">
-                            <td>Name:</td>
-                            <td>Sravan kumar</td>
+                        {% for member in members %}
+                        <tr class="d-flex justify-content-between align-items-center">
+                            <td>{{ member.relation }} :</td>
+                            <td>
+                                {{ member.name }}({{ member.age }}years old)
+                                <a href="{% url 'patient:member-update' member.id %}" class="text-warning">
+                                    <i class="fa fa-info-circle" aria-hidden="true">edit</i>
+                                </a>
+                            </td>
                         </tr>
-                        <tr class="d-flex justify-content-between">
-                            <td>age:</td>
-                            <td>28</td>
-                        </tr>
-                        <tr class="d-flex justify-content-between">
-                            <td>Gender:</td>
-                            <td>Male</td>
-                        </tr>
-                        <tr class="d-flex justify-content-between">
-                            <td>Phone:</td>
-                            <td>8086183640</td>
-                        </tr>
+                        {% endfor %}
                     </table>
-                    <a href="" class="text-decoration-none">
-                        <h6 class="text-center border-bottom mx-5 px-3 py-2 shadow rounded border-info">Add member</h6>
-                    </a>
+                    <div class="mt-3">
+                        <a href="" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <h6 class="text-center border mx-5 px-3 py-2 shadow rounded border-info">Add member</h6>
+                        </a>
+                    </div>
+                    <hr>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3 px-md-3">
-                <a href="" class="text-decoration-none">
-                    <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-info">My doctors</h5>
-                </a>
-                <div>
-                    <table cellpadding="5" class="m-auto">
-                        <tr class="d-flex justify-content-between">
-                            <td>Name:</td>
-                            <td>Sravan kumar</td>
-                        </tr>
-                        <tr class="d-flex justify-content-between">
-                            <td>age:</td>
-                            <td>28</td>
-                        </tr>
-                        <tr class="d-flex justify-content-between">
-                            <td>Gender:</td>
-                            <td>Male</td>
-                        </tr>
-                        <tr class="d-flex justify-content-between">
-                            <td>Phone:</td>
-                            <td>8086183640</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3 px-md-3">
-                <a href="" class="text-decoration-none">
-                    <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-info">History</h5>
-                </a>
+            <div class="col-lg-4 px-md-3 mt-3">
+                <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-warning">My doctors</h5>
                 <div>
                     <table cellpadding="5" class="m-auto">
                         <tr class="d-flex justify-content-between">
@@ -112,10 +83,31 @@
                     </table>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3 px-md-3">
-                <a href="" class="text-decoration-none">
-                    <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-info">Account</h5>
-                </a>
+            <div class="col-lg-4 px-md-3 mt-3">
+                <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-warning">History</h5>
+                <div>
+                    <table cellpadding="5" class="m-auto">
+                        <tr class="d-flex justify-content-between">
+                            <td>Name:</td>
+                            <td>Sravan kumar</td>
+                        </tr>
+                        <tr class="d-flex justify-content-between">
+                            <td>age:</td>
+                            <td>28</td>
+                        </tr>
+                        <tr class="d-flex justify-content-between">
+                            <td>Gender:</td>
+                            <td>Male</td>
+                        </tr>
+                        <tr class="d-flex justify-content-between">
+                            <td>Phone:</td>
+                            <td>8086183640</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-lg-4 px-md-3 mt-3">
+                <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-warning">Account</h5>
                 <div>
                     <table cellpadding="5" class="m-auto">
                         <tr class="d-flex justify-content-between">
@@ -140,10 +132,8 @@
                     </a>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3 px-md-3">
-                <a href="" class="text-decoration-none">
-                    <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-info">Account</h5>
-                </a>
+            <div class="col-lg-4 px-md-3 mt-3">
+                <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-warning">Account</h5>
                 <div>
                     <table cellpadding="5" class="m-auto">
                         <tr class="d-flex justify-content-between">
@@ -169,6 +159,42 @@
                 </div>
             </div>
     </div>
+
+<!--modal start    -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">You can select specialisation from here</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form method="post" action="{% url 'patient:add_member' %}">
+                {% csrf_token %}
+                <table class="m-auto" cellpadding="5">
+                    <tr class="d-flex justify-content-between align-items-center">
+                        <td>Relation</td>
+                        <td><input required type="text" name="relation" placeholder="eg: Father" class="form-control"></td>
+                    </tr>
+                    <tr class="d-flex justify-content-between align-items-center">
+                        <td>Name</td>
+                        <td><input required type="text" name="name" placeholder="Name" class="form-control"></td>
+                    </tr>
+                    <tr class="d-flex justify-content-between align-items-center">
+                        <td>Age</td>
+                        <td><input required type="number" name="age" placeholder="Age" class="form-control"></td>
+                    </tr>
+                </table>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+<!--modal end    -->
 </div>
 
 {% endblock %}
