@@ -15,7 +15,7 @@
                 {% if doctor.profile_image %}
                     <img src="{{ doctor.profile_image.url }}" class="mx-3" alt="doctr pic" width="65px" height="65px">
                 {% else %}
-                    {% if doctor.gender == "male" %}
+                    {% if doctor.details.gender == "male" %}
                     <img src="{% static 'img/profile_male.svg' %}" class="mx-3" alt="doctr pic" width="65px" height="65px">
                     {% else %}
                     <img src="{% static 'img/profile_female.svg' %}" class="mx-3" alt="doctr pic" width="65px" height="65px">
@@ -23,7 +23,7 @@
                 {% endif %}
                 <div>
                     <div class="d-flex align-items-center">
-                        <h2 class="text-muted">{{ doctor.first_name }} {{ doctor.last_name }}</h2>
+                        <h2 class="text-muted">{{ doctor.details.first_name }} {{ doctor.details.last_name }}</h2>
                         <small>(Mbbs, md)</small>
                     </div>
                     <div class="d-flex">
@@ -43,15 +43,17 @@
                     &nbsp3/5
                 </div>
                 <h6 class="py-2">12 patients helped</h6>
-                <a href="" class="btn btn-outline-primary">
+                <a href="" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#payment-for-{{doctor.id}}">
                     Book appointment
                 </a>
             </div>
         </div>
 
-        {% endfor %}
-        {% else %}
+        {% include 'patient/partials/payment-modal.html' %}
 
+        {% endfor %}
+
+        {% else %}
         <div class="shadow col d-flex align-items-center justify-content-around m-4 p-4 rounded border border-warning">
             <div class="d-flex align-items-center text-muted">
                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
@@ -59,38 +61,6 @@
             </div>
         </div>
         {% endif %}
-
-<!--        <div class="shadow col d-flex align-items-center justify-content-around m-4 p-4 rounded border border-info">-->
-<!--            <div class="d-flex align-items-center">-->
-<!--                <img src="{% static 'img/profile_male.svg' %}" class="mx-3" alt="doctr pic" width="65px" height="65px">-->
-<!--                <div>-->
-<!--                    <div class="d-flex align-items-center">-->
-<!--                        <h2 class="text-muted">satheeshan</h2>-->
-<!--                        <small>(Mbbs, md)</small>-->
-<!--                    </div>-->
-<!--                    <div class="d-flex">-->
-<!--                    <small class="border bg-success text-white rounded p-1">Malayalam</small>-->
-<!--                    <small class="border bg-success text-white rounded p-1">English</small>-->
-<!--                    <small class="border bg-success text-white rounded p-1">Hindi</small>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--            <div class="text-center">-->
-<!--                <div class="d-flex align-items-center">-->
-<!--                    Rating:&nbsp-->
-<!--                    <i class="fa fa-star text-warning"></i>-->
-<!--                    <i class="fa fa-star text-warning"></i>-->
-<!--                    <i class="fa fa-star text-warning"></i>-->
-<!--                    &nbsp3/5-->
-<!--                </div>-->
-<!--                <h6 class="py-2">12 patients helped</h6>-->
-<!--                <a href="" class="btn btn-outline-primary">-->
-<!--                    Book appointment-->
-<!--                </a>-->
-<!--            </div>-->
-<!--        </div>-->
-
 </div>
 
 {% endblock %}

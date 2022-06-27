@@ -1,8 +1,10 @@
+from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, UpdateView
 
-from accounts.models import Specialities, CustomUser
+from accounts.models import CustomUser
+from doctors.models import Specialities, Doctors
 from patients.models import FamilyMembers
 from patients.forms import UpdateMemberForm, PatientUpdateForm
 
@@ -14,15 +16,15 @@ class HomeView(ListView):
 
 
 class DoctorsListView(ListView):
-    model = CustomUser
+    model = Doctors
     context_object_name = 'doctors'
     template_name = 'patient/doctors.html'
 
     def get_queryset(self, **kwargs):
         doctors = super().get_queryset()
         specialised_slug = self.kwargs.get("s_slug")
-        special = Specialities.objects.get(slug=specialised_slug)
-        return doctors.filter(specialized_in=special.id)
+        specialised_in = Specialities.objects.get(slug=specialised_slug)
+        return doctors.filter(specialized_in=specialised_in)
 
 
 def add_family_member_view(request):
@@ -38,6 +40,7 @@ def add_family_member_view(request):
             age=age,
         )
         member.save()
+        messages.success(request, "Successfully added new member..!")
         return redirect('patient:profile')
 
 
@@ -58,6 +61,10 @@ class UpdateMemberView(UpdateView):
     template_name = 'patient/update_member.html'
     success_url = reverse_lazy('patient:profile')
 
+    def get_success_url(self):
+        messages.success(self.request, "Family member updated successfully..!")
+        return super().get_success_url()
+
 
 class UpdatePatientView(UpdateView):
     model = CustomUser
@@ -66,8 +73,13 @@ class UpdatePatientView(UpdateView):
     template_name = 'patient/update_patient.html'
     success_url = reverse_lazy('patient:profile')
 
+    def get_success_url(self):
+        messages.success(self.request, "Profile data updated successfully..!")
+        return super().get_success_url()
+
 
 def delete_member(request, m_id):
     member = FamilyMembers.objects.get(id=m_id)
     member.delete()
+    messages.success(request, "Deleted successfully..")
     return redirect('patient:profile')

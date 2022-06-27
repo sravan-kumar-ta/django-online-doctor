@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import gettext_lazy as _
 
-from accounts.models import CustomUser, Specialities
+from accounts.models import CustomUser
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -75,13 +75,3 @@ class LoginForm(forms.Form):
         "class": "form-control",
         "placeholder": "Password"
     }))
-
-
-class SpecialisedDoctorForm(forms.ModelForm):
-    specialized_in = forms.ChoiceField(choices=Specialities.objects.all(), widget=forms.Select(attrs={
-        'class': 'form-control'
-    }))
-
-    class Meta:
-        model = CustomUser
-        fields = ['specialized_in']

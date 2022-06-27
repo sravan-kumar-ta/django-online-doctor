@@ -1,0 +1,46 @@
+
+
+<!--Bootstrap Modal-->
+<!--Appointment-->
+
+<div class="modal fade" id="payment-for-{{doctor.id}}" tabindex="-1" aria-labelledby="exampleModalLabel{{doctor.id}}"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title" id="exampleModalLabel{{doctor.id}}">
+                    Appointment with Dr.{{doctor.first_name}} {{doctor.last_name}}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <h5 class="text-center">Select a date:</h5>
+                <!-- date querying -->
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <input class="form-control" type="date" id="app-date-for-{{doctor.id}}" min="0" onclick="setMinDate(event)">
+                        <small class="text-danger" style="display: none;" id="date-error">Please select a date</small>
+                    </div>
+                    <div class="text-center">
+                        <button onclick="dateForAppointment('{{doctor.id}}')" class="btn btn-outline-info my-2">
+                            Check Availability
+                        </button>
+                    </div>
+                </div>
+
+                <div class="loader mt-4" style="display: none;" id="loader-wait"></div>
+                <div id="available-times-for-{{doctor.id}}" class="text-center">
+                    <!-- div where the available times will be shown -->
+                </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+

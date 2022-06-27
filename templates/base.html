@@ -7,7 +7,7 @@
 <title>Bootstrap demo</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
-
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 </head>
 <body>
 
@@ -26,11 +26,11 @@
                     <li><a href="#" class="nav-link px-2 link-primary">Overview</a></li>
                 </ul>
 
-                {% if request.user and request.user.is_authenticated and request.user.role == "doctor" and request.user.specialized_in == None %}
-                <div class="fade show p-auto rounded mx-3" role="alert" style="color: #FF6363; border-left: 2px solid; border-right: 2px solid; padding: 5px 15px">
+                {% if request.user and request.user.is_authenticated and request.user.role == "doctor" and not request.user.doctor %}
+                <div class="fade show p-auto rounded mx-3" role="alert" style="color: #FF6363; border-left: 2px solid; border-right: 2px solid; padding: 5px 15px; background-color: #ffe6e6">
                     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                    <span class="mx-3">You have to add specialization in doctor.</span>
-                    <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="" class="border border-danger border-3 text-decoration-none rounded px-2">Add now?</a>
+                    <span class="mx-3">You need to add some details to get an appointment from the patients.</span>
+                    <a data-bs-toggle="modal" data-bs-target="#doctor-details" href="" class="border border-danger border-3 text-decoration-none rounded px-2">Add now?</a>
                 </div>
                 {% endif %}
 
@@ -69,27 +69,111 @@
     </header>
 
     <!-- Modal -->
-    {% if request.user and request.user.is_authenticated and request.user.role == "doctor" and request.user.specialized_in == None %}
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    {% if request.user and request.user.is_authenticated and request.user.role == "doctor" and not request.user.doctor %}
+    <div class="modal fade" id="doctor-details" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">You can select specialisation from here</h5>
+            <h5 class="modal-title" id="exampleModalLabel">My data</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form method="post" action="{% url 'doctor-register' request.user.id %}">
+            <form method="post" action="{% url 'doctor:doctor-register' %}">
                 {% csrf_token %}
                 <table class="m-auto" cellpadding="5">
-                    <tr class="d-flex justify-content-between align-items-center">
-                        <td>I specialise in </td>
+                    <tr>
+                        <td><b>Specialised in</b></td>
+                        <td>{{ fm.specialized_in }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Charge</b></td>
+                        <td colspan="2">{{ fm.charge }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="3" class="text-center">-----Your Availability-----</th>
+                    </tr>
+                    <tr>
+                        <th>Day</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                    </tr>
+
+                    <tr>
                         <td>
-                            <select name="specialisation" id="" class="form-select">
-                                {% for specialisation in specialisations %}
-                                <option value="{{ specialisation.id }}">{{specialisation.special }}</option>
-                                {% endfor %}
-                            </select>
-                            <small class="text-danger">{{ field.errors|striptags }}</small>
+                            Sunday
+                        </td>
+                        <td>
+                            {{fm.sun_start}} {{fm.sun_start.errors | striptags}}
+                        </td>
+                        <td>
+                            {{fm.sun_end}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Monday
+                        </td>
+                        <td>
+                            {{fm.mon_start}} {{fm.mon_start.errors | striptags}}
+                        </td>
+                        <td>
+                            {{fm.mon_end}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Tuesday
+                        </td>
+                        <td>
+                            {{fm.tue_start}} {{fm.tue_start.errors | striptags}}
+                        </td>
+                        <td>
+                            {{fm.tue_end}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Wednesday
+                        </td>
+                        <td>
+                            {{fm.wed_start}} {{fm.wed_start.errors | striptags}}
+                        </td>
+                        <td>
+                            {{fm.wed_end}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Thursday
+                        </td>
+                        <td>
+                            {{fm.thu_start}} {{fm.thu_start.errors | striptags}}
+                        </td>
+                        <td>
+                            {{fm.thu_end}}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Friday
+                        </td>
+                        <td>
+                            {{fm.fri_start}} {{fm.fri_start.errors | striptags}}
+                        </td>
+                        <td>
+                            {{fm.fri_end}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Saturday
+                        </td>
+                        <td>
+                            {{fm.sat_start}} {{fm.sat_start.errors | striptags}}
+                        </td>
+                        <td>
+                            {{fm.sat_end}}
                         </td>
                     </tr>
                 </table>
@@ -132,5 +216,7 @@
 
 <!-- Core plugin JavaScript-->
 <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+    <script src="{% static 'js/custom.js' %}"></script>
 </body>
 </html>

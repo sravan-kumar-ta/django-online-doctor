@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
+    'doctors',
     'patients',
 ]
 
@@ -63,7 +64,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'accounts.context_preprocessor.specialised_categories',
+                'doctors.context_preprocessor.specialised_categories',
             ],
         },
     },
