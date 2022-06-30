@@ -13,6 +13,14 @@ urlpatterns = [
     path('profile/member/<int:m_id>/delete/', views.delete_member, name='member-delete'),
 
 
+    path('find-available-slot/doctor/ajax/', views.available_slot, name='available-slot'),
+
+    path('create_appointment/ajax/<int:d_id>/<str:app_date>/<str:start_time>/', views.create_appointment,
+         name='create-appointment'),
+
+
+
+
     # path('doctors/', views.doctors, name="doctors"),
     # path('profile/', views.profile, name="profile"),
 ]

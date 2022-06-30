@@ -15,12 +15,15 @@
             </div>
             <div class="modal-body">
 
-                <h5 class="text-center">Select a date:</h5>
+                <div class="d-flex align-items-center justify-content-center">
+                <h5 class="text-center">Select a date</h5>
+                <small class="text-warning">(You can choose within 10 days from today)</small> :
+                </div>
                 <!-- date querying -->
                 <div class="row">
                     <div class="col-md-6 offset-md-3">
-                        <input class="form-control" type="date" id="app-date-for-{{doctor.id}}" min="0" onclick="setMinDate(event)">
-                        <small class="text-danger" style="display: none;" id="date-error">Please select a date</small>
+                        <input class="form-control" type="date" id="app-date-for-{{doctor.id}}" min="0" onclick="setMinMaxDate(event)">
+                        <small class="text-danger" style="display: none;" id="date-error-for-{{doctor.id}}">Please select a date</small>
                     </div>
                     <div class="text-center">
                         <button onclick="dateForAppointment('{{doctor.id}}')" class="btn btn-outline-info my-2">
@@ -29,12 +32,17 @@
                     </div>
                 </div>
 
-                <div class="loader mt-4" style="display: none;" id="loader-wait"></div>
+                <div class="loader mt-4" style="display: none;" id="loader-wait-for-{{doctor.id}}"></div>
                 <div id="available-times-for-{{doctor.id}}" class="text-center">
                     <!-- div where the available times will be shown -->
                 </div>
 
 
+                <!-- some information kept hidden -->
+                <span style="visibility: hidden;" id="charge-for-doctor-{{doctor.id}}">{{ doctor.charge }}</span>
+
+                <!-- to show selected date and time -->
+                <div id="date-and-time-for-{{doctor.id}}"></div>
 
             </div>
             <div class="modal-footer">
@@ -43,4 +51,3 @@
         </div>
     </div>
 </div>
-

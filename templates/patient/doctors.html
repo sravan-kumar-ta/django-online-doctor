@@ -64,3 +64,152 @@
 </div>
 
 {% endblock %}
+
+
+{% block script %}
+
+console.log("connected to custom.js")
+
+const setMinMaxDate = (event)=>{
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    today = yyyy + '-' + mm + '-' + dd;
+    event.target.min = today;
+
+    var today = new Date();
+    today.setDate(today.getDate() + 10);
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    today = yyyy + '-' + mm + '-' + dd;
+    event.target.max = today;
+}
+
+
+function dateForAppointment(id){
+    date = document.querySelector('#app-date-for-'+id).value;
+    console.log(date)
+    document.getElementById('date-error-for-'+id).style.display = "none";
+    if (date == ""){
+        document.getElementById('date-error-for-'+id).style.display = "block";
+        return
+    }
+
+    target = document.querySelector("#available-times-for-"+id);
+    target.innerText = "Wait a moment....";
+    document.getElementById('loader-wait-for-'+id).style.display = "block";
+
+    $.ajax({
+        type: 'POST',
+        url: "{% url 'patient:available-slot' %}",
+        data: {
+            type: 'dateSearch',
+            doctor_id: id,
+            date: date
+        },
+        success : (data)=>{
+            target.innerHTML = '';
+            document.getElementById('loader-wait-for-'+id).style.display = "none";
+            console.log(data);
+            if(data.slots){
+                showDates(target, data.slots, id);
+            }
+            else
+                showFailure(target, id);
+        }
+    })
+}
+
+
+function showDates(target, slots, doc_id){
+    document.getElementById("date-and-time-for-"+doc_id).innerHTML = '';
+
+    head = document.createElement('h3');
+    head.innerText = "Select Time";
+    target.appendChild(head);
+    for(const slot in slots){
+        btn = document.createElement('button');
+        btn.classList.add('btn');
+        btn.classList.add('btn-outline-primary');
+        btn.classList.add('btn-sm');
+        btn.classList.add('m-2');
+
+        let date_full = new Date(slots[slot]);
+        let time = date_full.getHours() + ":" + date_full.getMinutes();
+        let start_time = date_full.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+        date_full.setMinutes( date_full.getMinutes() + 30 );
+        let end_time = date_full.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+
+        btn.addEventListener('click', function(){
+            showSelectedDateTime(doc_id, date, start_time, end_time);
+        })
+
+        btn.innerHTML = `
+            <b>${start_time}</b><br>
+            to<br>
+            <b>${end_time}</b>
+        `;
+        target.appendChild(btn);
+    }
+}
+
+function showFailure(target, id){
+    div = document.getElementById("date-and-time-for-"+id);
+    div.innerHTML="";
+    head = document.createElement('h3');
+    head.classList.add("text-danger");
+    head.innerHTML = `<i class="bi bi-emoji-frown"></i><br>Not Available on this day!`;
+    target.appendChild(head);
+}
+
+
+
+function showSelectedDateTime(id, date, time_start, time_end){
+    let formatted_date = moment(date).format('Do MMMM YYYY');
+
+    document.getElementById("available-times-for-"+id).innerHTML = "";
+    let div = document.getElementById("date-and-time-for-"+id);
+    let charge = document.getElementById("charge-for-doctor-"+id).innerHTML;
+
+    var anchor_id = "pay-to-proceed-"+id
+    div.innerHTML="";
+    div.classList.add("d-flex");
+    div.classList.add("justify-content-center");
+    div.innerHTML = `
+    <div class="card border-primary shadow" style="width: 20rem;" id="appointment-card-for-${id}">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title text-center">Selected date and Time</h5>
+        </div>
+
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <i class="fa fa-calendar-check text-success"></i> &nbsp&nbsp
+                    <b class="text-primary">${formatted_date}</b>
+                </li>
+                <li class="list-group-item">
+                    <i class="fa fa-clock text-success"></i> &nbsp&nbsp
+                    <b class="text-primary">${time_start}</b> to
+                    <b class="text-primary">${time_end}</b>
+                </li>
+                <li class="list-group-item">Doctor fee: <b class="text-primary">${charge}&#8377;</b></li>
+            </ul>
+        </div>
+        <div class="card-footer text-center">
+            <a id="${anchor_id}" class="btn btn-outline-success">
+                Done
+            </a>
+        </div>
+    </div>
+    `
+    var anchor_element = document.getElementById(anchor_id);
+    let link = "{% url 'patient:create-appointment' 5 555 77777 %}";
+    let new_link = link.replace("5", id).replace("555", date).replace("77777", time_start);
+
+    anchor_element.href = new_link;
+}
+
+{% endblock %}
+
