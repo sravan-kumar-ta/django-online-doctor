@@ -92,7 +92,7 @@ def delete_member(request, m_id):
     return redirect('patient:profile')
 
 
-def getStartEndTime(doctor, day):
+def getStartEndTime(doctor, day, modified_date):
     time_start = None
     time_end = None
     if day == 1:
@@ -117,15 +117,13 @@ def getStartEndTime(doctor, day):
         time_start = doctor.sun_start
         time_end = doctor.sun_end
     try:
-        return time_start, time_end
+        return datetime.combine(modified_date, time_start), datetime.combine(modified_date, time_end)
     except:
         return None, None
 
 
-def getAvailableTimes(date, booked_slots, start_time, end_time):
-    current = datetime.combine(date, start_time)
-    end_time = datetime.combine(date, end_time)
-    duration = timedelta(minutes=30)
+def getAvailableTimes(booked_slots, duration, start_time, end_time):
+    current = start_time
     count = 0
     available = {}
     while True:
@@ -145,6 +143,7 @@ def available_slot(request):
     request_date = request.POST.get('date')
     modified_date = datetime.strptime(request_date, "%Y-%m-%d").date()
     day = modified_date.isoweekday()
+    duration = timedelta(minutes=30)
 
     # Appointments are taken according to the requested date and time
     appointments = Appointments.objects.filter(
@@ -153,15 +152,17 @@ def available_slot(request):
     doctor = CustomUser.objects.get(pk=doctor_id).doctor
 
     # take starting and ending time of day of the requested doctor
-    start_time, end_time = getStartEndTime(doctor, day)
+    start_time, end_time = getStartEndTime(doctor, day, modified_date)
 
     booked_slots = set()
     for appointment in appointments:
-        booked_slots.add(appointment.time)
+        booked_slots.add(
+            datetime.combine(modified_date, appointment.time)
+        )
 
     available_slots = {}
     if start_time:
-        available_slots = getAvailableTimes(modified_date, booked_slots, start_time, end_time)
+        available_slots = getAvailableTimes(booked_slots, duration, start_time, end_time)
     response = {
         'success': 'success ' + doctor_id,
         'day': modified_date.isoweekday(),
@@ -172,19 +173,23 @@ def available_slot(request):
 
 
 def create_appointment(request, d_id, app_date, start_time):
+    # start_time 2:59 PM to be converted to 21:59:00
+    in_time = datetime.strptime(start_time, "%I:%M %p")  # str to datetime.datetime (date+time) --> 1900-01-01 21:59:00
+    out_time = datetime.strftime(in_time, "%H:%M:%S")  # datetime.datetime to str (time only) --> 21:59:00
+    new_time = datetime.strptime(out_time, "%H:%M:%S").time()  # str to datetime.datetime (correct time) --> 21:59:00
+
     doctor = CustomUser.objects.get(pk=d_id)
     patient = CustomUser.objects.get(pk=request.user.id)
     appointment_date = datetime.strptime(app_date, '%Y-%m-%d').date()
-    appointment_time = datetime.strptime(start_time, "%I:%M %p").time()
-    new_date = datetime.combine(date=appointment_date, time=appointment_time)
-    app_end_time = timezone.make_aware(new_date + timedelta(minutes=30))
+    modified_date = datetime.combine(date=appointment_date, time=new_time)
+    app_end_time = timezone.make_aware(modified_date + timedelta(minutes=30))
 
     appointment = Appointments.objects.create(
         patient=patient,
         doctor=doctor,
         date=appointment_date,
-        time=appointment_time,
-        date_time_start=new_date,
+        time=new_time,
+        date_time_start=modified_date,
         date_time_end=app_end_time,
         status='upcoming'
     )
