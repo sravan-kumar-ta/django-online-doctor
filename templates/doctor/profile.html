@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'doctor/base.html' %}
 
 {% block content %}
 
@@ -26,73 +26,110 @@
                     <table cellpadding="5" class="m-auto">
                         <tr class="d-flex justify-content-between">
                             <td>Name:</td>
-                            <td>{{ request.user.first_name }} {{ request.user.last_name }}</td>
+                            <td class="text-primary">{{ request.user.first_name }} {{ request.user.last_name }}</td>
                         </tr>
                         <tr class="d-flex justify-content-between">
                             <td>Username:</td>
-                            <td>{{ request.user.username }}</td>
+                            <td class="text-primary">{{ request.user.username }}</td>
                         </tr>
                         <tr class="d-flex justify-content-between">
                             <td>Gender:</td>
-                            <td style="text-transform: capitalize;">{{ request.user.gender }}</td>
+                            <td style="text-transform: capitalize;" class="text-primary">{{ request.user.gender }}</td>
                         </tr>
                         <tr class="d-flex justify-content-between">
                             <td>Email:</td>
-                            <td>{{ request.user.email }}</td>
+                            <td class="text-primary">{{ request.user.email }}</td>
                         </tr>
                         <tr class="d-flex justify-content-between">
                             <td>Phone:</td>
-                            <td>8086183640</td>
+                            <td class="text-primary">8086183640</td>
                         </tr>
                     </table>
-                    <a href="{% url 'patient:patient-update' request.user.id %}" class="text-decoration-none">
+                    <a href="{% url 'doctor:doctor-update' request.user.id %}" class="text-decoration-none">
                         <h6 class="text-center border mx-5 px-3 py-2 shadow rounded border-info">Update</h6>
                     </a>
                 </div>
             </div>
             <div class="col-lg-4 px-md-3 mt-3">
-                <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-warning">Family members</h5>
+                <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-warning">Details</h5>
                 <div>
                     <table cellpadding="5" class="m-auto">
-                        {% for member in members %}
-                        <tr class="d-flex justify-content-between align-items-center">
-                            <td>{{ member.relation }} :</td>
-                            <td>
-                                {{ member.name }}({{ member.age }}years old)
-                                <a href="{% url 'patient:member-update' member.id %}" class="text-warning">
-                                    <i class="fa fa-info-circle" aria-hidden="true">edit</i>
-                                </a>
-                            </td>
+                        <tr class="d-flex justify-content-between">
+                            <td>Specialized in:</td>
+                            <td class="text-primary">{{ doctor.specialized_in }}</td>
                         </tr>
-                        {% endfor %}
+                        <tr class="d-flex justify-content-between">
+                            <td>Charge for 30mint.:</td>
+                            <td class="text-primary">{{ doctor.charge }} &#8377;</td>
+                        </tr>
                     </table>
                     <div class="mt-3">
                         <a href="" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                            <h6 class="text-center border mx-5 px-3 py-2 shadow rounded border-info">Add member</h6>
+                            <h6 class="text-center border mx-5 px-3 py-2 shadow rounded border-info">Update details</h6>
                         </a>
                     </div>
                     <hr>
                 </div>
             </div>
             <div class="col-lg-4 px-md-3 mt-3">
-                <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-warning">My doctors</h5>
+                <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-warning">Available times</h5>
                 <div>
                     <table cellpadding="5" class="m-auto">
                         <tr class="d-flex justify-content-between">
-                            <td>Name:</td>
-                            <td>Sravan kumar</td>
+                            <td>Sunday:</td>
+                            <td class="text-primary text-uppercase">
+                                {{ doctor.sun_start }}
+                                <span class="text-dark text-lowercase">to</span>
+                                {{ doctor.sun_start }}
+                            </td>
                         </tr>
                         <tr class="d-flex justify-content-between">
-                            <td>age:</td>
-                            <td>28</td>
+                            <td>Monday:</td>
+                            <td class="text-primary text-uppercase">
+                                {{ doctor.mon_start }}
+                                <span class="text-dark text-lowercase">to</span>
+                                {{ doctor.mon_start }}
+                            </td>
                         </tr>
                         <tr class="d-flex justify-content-between">
-                            <td>Gender:</td>
-                            <td>Male</td>
+                            <td>Tuesday:</td>
+                            <td class="text-primary text-uppercase">
+                                {{ doctor.tue_start }}
+                                <span class="text-dark text-lowercase">to</span>
+                                {{ doctor.tue_start }}
+                            </td>
                         </tr>
                         <tr class="d-flex justify-content-between">
-                            <td>Phone:</td>
-                            <td>8086183640</td>
+                            <td>Wednesday:</td>
+                            <td class="text-primary text-uppercase">
+                                {{ doctor.wed_start }}
+                                <span class="text-dark text-lowercase">to</span>
+                                {{ doctor.wed_end }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex justify-content-between">
+                            <td>Thursday:</td>
+                            <td class="text-primary text-uppercase">
+                                {{ doctor.thu_start }}
+                                <span class="text-dark text-lowercase">to</span>
+                                {{ doctor.thu_end }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex justify-content-between">
+                            <td>Friday:</td>
+                            <td class="text-primary text-uppercase">
+                                {{ doctor.fri_start }}
+                                <span class="text-dark text-lowercase">to</span>
+                                {{ doctor.fri_end }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex justify-content-between">
+                            <td>Saturday:</td>
+                            <td class="text-primary text-uppercase">
+                                {{ doctor.sat_start }}
+                                <span class="text-dark text-lowercase">to</span>
+                                {{ doctor.sat_start }}
+                            </td>
                         </tr>
                     </table>
                 </div>
@@ -179,29 +216,30 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">You can select specialisation from here</h5>
+            <h5 class="modal-title" id="exampleModalLabel">You can update details from here</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form method="post" action="{% url 'patient:add_member' %}">
+            <form method="post" action="{% url 'doctor:update-details' %}">
                 {% csrf_token %}
                 <table class="m-auto" cellpadding="5">
                     <tr class="d-flex justify-content-between align-items-center">
-                        <td>Relation</td>
-                        <td><input required type="text" name="relation" placeholder="eg: Father" class="form-control"></td>
+                        <td>Specialized in:</td>
+                        <td>
+                            <select class="form-control" name="special">
+                                {% for speciality in specialities %}
+                                <option  value="{{speciality.id}}" {% if doctor.specialized_in.title == speciality.title %} selected {% endif %}>{{ speciality.title }}</option>
+                                {% endfor %}
+                            </select>
                     </tr>
                     <tr class="d-flex justify-content-between align-items-center">
-                        <td>Name</td>
-                        <td><input required type="text" name="name" placeholder="Name" class="form-control"></td>
-                    </tr>
-                    <tr class="d-flex justify-content-between align-items-center">
-                        <td>Age</td>
-                        <td><input required type="number" name="age" placeholder="Age" class="form-control"></td>
+                        <td>Charge</td>
+                        <td><input value="{{ doctor.charge }}" required type="number" name="charge" placeholder="Name" class="form-control"></td>
                     </tr>
                 </table>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Add</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
                 </div>
             </form>
           </div>

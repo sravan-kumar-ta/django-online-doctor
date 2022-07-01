@@ -113,7 +113,7 @@ function dateForAppointment(id){
             target.innerHTML = '';
             document.getElementById('loader-wait-for-'+id).style.display = "none";
             console.log(data);
-            if(data.slots){
+            if(Object.keys(data.slots).length){
                 showDates(target, data.slots, id);
             }
             else
@@ -156,11 +156,12 @@ function showDates(target, slots, doc_id){
 }
 
 function showFailure(target, id){
+    console.log("failuer running");
     div = document.getElementById("date-and-time-for-"+id);
     div.innerHTML="";
     head = document.createElement('h3');
     head.classList.add("text-danger");
-    head.innerHTML = `<i class="bi bi-emoji-frown"></i><br>Not Available on this day!`;
+    head.innerHTML = `<i class="fa fa-frown"></i><br>Not Available on this day!`;
     target.appendChild(head);
 }
 
