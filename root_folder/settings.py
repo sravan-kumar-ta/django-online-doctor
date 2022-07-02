@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'accounts',
     'doctors',
     'patients',
+    'blogs',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [

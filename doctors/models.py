@@ -30,7 +30,7 @@ class Doctors(models.Model):
     #     ('Pulmonology', 'Pulmonology'),
     # )
     details = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='doctor')
-    profile_image = models.ImageField(upload_to='files/doctors', null=True)
+    profile_image = models.ImageField(upload_to='images/doctors', null=True)
     specialized_in = models.ForeignKey(Specialities, on_delete=models.CASCADE)
     charge = models.PositiveIntegerField()
 

@@ -23,8 +23,11 @@
                     <li>
                         <a href="{{doc_app}}" class="nav-link px-2 link-primary {% if request.path == doc_app %} border-bottom border-success border-4 rounded {% endif %}">Appointments</a>
                     </li>
-                    <li><a href="#" class="nav-link px-2 link-primary">Overview</a></li>
-                    <li><a href="#" class="nav-link px-2 link-primary">Overview</a></li>
+                    {% url 'blog:blogs' as blogs %}
+                    <li>
+                        <a href="{{ blogs }}" class="nav-link px-2 link-primary {% if request.path == blogs %} border-bottom border-success border-4 rounded {% endif %}">Blogs</a>
+                    </li>
+                    <li><a href="#" class="nav-link px-2 link-primary">Chat</a></li>
                 </ul>
 
                 {% if request.user and request.user.is_authenticated and request.user.role == "doctor" and not request.user.doctor %}

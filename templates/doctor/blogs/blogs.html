@@ -1,0 +1,78 @@
+{% extends 'doctor/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="container px-4 py-2" id="icon-grid">
+    <div class="d-flex align-items-center">
+        <h2 class="pb-2 border-bottom">Blogs</h2>
+        <a href="{% url 'blog:add-article' %}" class="mx-3 text-decoration-none btn btn-outline-primary">Create a new blog</a>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert border m-auto text-success" style="background: #a6ffbe">
+                    <span class="icon">
+                        <i class="fas fa-check"></i>
+                    </span>
+                    <span class="text px-5 fw-bold">{{ message }}</span>
+                    <button type="button" class="close pr-2 rounded" data-dismiss="alert" aria-label="Close" style="background: #ccffda; border: 1px solid #ff5959;color: #FF6363">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="row mb-2">
+        <div class="col-md-6">
+            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <h3 class="mb-0">Featured post</h3>
+                    <div class="mb-1 text-muted">Nov 12</div>
+                    <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
+                <div class="d-flex justify-content-between">
+                    <a href="" class="stretched-link">Continue reading</a>
+                    <div>
+                        5
+                        <i class="fa fa-thumbs-up text-success" aria-hidden="true"></i>
+                    </div>
+                </div>
+                </div>
+                <div class="col-auto d-none d-lg-block">
+                    <img src="{% static 'img/blog.jpg' %}" alt="" style="max-height: 220px">
+                </div>
+            </div>
+        </div>
+        {% for post in posts %}
+        <div class="col-md-6">
+            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <h3 class="mb-0">{{ post.title|truncatechars:20 }}</h3>
+                    <div class="d-flex text-muted">
+                        <p class="text-capitalize">Dr&nbsp;{{ post.author.first_name }}&nbsp;{{ post.author.last_name }}</p>
+                        &nbsp;|&nbsp;<p class="text-capitalize">{{ post.date|naturalday }}</p>
+                    </div>
+                    <p class="card-text mb-auto">{{ post.content|truncatechars:100 }}</p>
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'blog:article-detail' post.pk %}" class="stretched-link">Continue reading...</a>
+                    <div>
+                        5
+                        <i class="fa fa-thumbs-up text-success" aria-hidden="true"></i>
+                    </div>
+                </div>
+                </div>
+                {% if post.image %}
+                <div class="col-auto d-none d-lg-block mt-3">
+                    <img src="{{ post.image.url }}" alt="sas" style="height: 200px;">
+                </div>
+                {% else %}
+                <div class="col-auto d-none d-lg-block">
+                    <img src="{% static 'img/blog.jpg' %}" alt="" style="max-height: 200px">
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
