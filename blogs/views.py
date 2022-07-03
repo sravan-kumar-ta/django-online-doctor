@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
@@ -8,17 +9,23 @@ from blogs.models import Posts
 
 
 def blogs(request):
-    posts = Posts.objects.filter(is_public=True)
+    posts = Posts.objects.filter(is_public=True).order_by('?')
+    paginator = Paginator(posts, 4)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     if request.user.role == 'doctor':
-        return render(request, 'doctor/blogs/blogs.html', {'posts': posts})
+        return render(request, 'doctor/blogs/blogs.html', {'page_obj': page_obj})
     else:
-        return render(request, 'patient/blogs/blogs.html', {'posts': posts})
+        return render(request, 'patient/blogs/blogs.html', {'page_obj': page_obj})
 
 
 class MyArticlesListView(ListView):
     model = Posts
     context_object_name = 'posts'
     template_name = 'doctor/blogs/my_blogs.html'
+    paginate_by = 4
 
     def get_queryset(self):
         return Posts.objects.filter(author=self.request.user)
@@ -67,6 +74,8 @@ def post_like(request, blog_id):
     post = get_object_or_404(Posts, id=blog_id)
     if post.likes.filter(id=request.user.id).exists():
         post.likes.remove(request.user)
+        messages.success(request, 'You disliked this post...')
     else:
         post.likes.add(request.user)
+        messages.success(request, 'You liked this post...')
     return redirect('blog:article-detail', blog_id)

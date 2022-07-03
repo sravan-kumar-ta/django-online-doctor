@@ -23,26 +23,7 @@
         {% endif %}
     </div>
     <div class="row mb-2">
-        <div class="col-md-6">
-            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                <div class="col p-4 d-flex flex-column position-static">
-                    <h3 class="mb-0">Featured post</h3>
-                    <div class="mb-1 text-muted">Nov 12</div>
-                    <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-                <div class="d-flex justify-content-between">
-                    <a href="" class="stretched-link">Continue reading</a>
-                    <div>
-                        5
-                        <i class="fa fa-thumbs-up text-success" aria-hidden="true"></i>
-                    </div>
-                </div>
-                </div>
-                <div class="col-auto d-none d-lg-block">
-                    <img src="{% static 'img/blog.jpg' %}" alt="" style="max-height: 220px">
-                </div>
-            </div>
-        </div>
-        {% for post in posts %}
+        {% for post in page_obj %}
         <div class="col-md-6">
             <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                 <div class="col p-4 d-flex flex-column position-static">
@@ -76,5 +57,33 @@
         {% endfor %}
     </div>
 </div>
+
+
+<ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+        </li>
+    {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="">&laquo; Previous</a>
+        </li>
+    {% endif %}
+
+    {% for page_number in page_obj.paginator.page_range %}
+      <li class="page-item {% if page_obj.number == page_number %} active {% endif %}"><a class="page-link" href="?page={{page_number}}">{{page_number}}</a></li>
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a>
+        </li>
+    {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="">Next &raquo;</a>
+        </li>
+    {% endif %}
+</ul>
+
 
 {% endblock %}

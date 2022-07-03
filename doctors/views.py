@@ -21,9 +21,9 @@ def add_doctor_details(request):
 
 class UpdatePatientView(UpdateView):
     model = CustomUser
-    pk_url_kwarg = 'p_id'
+    pk_url_kwarg = 'dtr_id'
     form_class = PatientUpdateForm
-    template_name = 'patient/update_patient.html'
+    template_name = 'doctor/update_doctor.html'
     success_url = reverse_lazy('doctor:profile')
 
     def get_success_url(self):
@@ -59,8 +59,8 @@ def update_details(request):
     return redirect('doctor:profile')
 
 
-def update_available_time(request, d_id):
-    form = AvailableTimeUpdationForm(request.POST, instance=Doctors.objects.get(id=d_id))
+def update_available_time(request, dtr_id):
+    form = AvailableTimeUpdationForm(request.POST, instance=Doctors.objects.get(id=dtr_id))
     if form.is_valid():
         form.save()
         messages.success(request, "Available time updated..")

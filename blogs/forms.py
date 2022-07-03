@@ -5,7 +5,7 @@ from blogs.models import Posts
 class PostForm(forms.ModelForm):
     class Meta:
         model = Posts
-        exclude = ['date', 'author']
+        exclude = ['date', 'author', 'likes']
 
         widgets = {
             'title': forms.TextInput(attrs={
@@ -22,4 +22,8 @@ class PostForm(forms.ModelForm):
             'is_public': forms.CheckboxInput(attrs={
                 'class': 'form-check-input'
             })
+        }
+
+        labels = {
+            'is_public': 'Want to post publicly?'
         }

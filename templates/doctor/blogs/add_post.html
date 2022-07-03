@@ -25,7 +25,7 @@
             <form method="post" enctype="multipart/form-data" class="border border-info shadow p-4 rounded">
                 {% csrf_token %}
                 {% for field in form %}
-                <div class="form-group">
+                <div class="form-group mt-3">
                     <label class="form-label text-success">{{ field.label}}</label>
                     {{ field}}
                     <small class="text-danger">{{ field.errors }}</small>

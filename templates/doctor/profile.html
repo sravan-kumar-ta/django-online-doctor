@@ -5,7 +5,6 @@
 <div class="container px-4 py-2" id="icon-grid">
     <div class="d-flex">
         <h2 class="pb-2 border-bottom">Profile</h2>
-        <i class='bx bx-user'></i>
         {% if messages %}
             {% for message in messages %}
                 <div class="alert border m-auto text-success" style="background: #a6ffbe">
@@ -40,10 +39,6 @@
                         <tr class="d-flex justify-content-between">
                             <td>Email:</td>
                             <td class="text-primary">{{ request.user.email }}</td>
-                        </tr>
-                        <tr class="d-flex justify-content-between">
-                            <td>Phone:</td>
-                            <td class="text-primary">8086183640</td>
                         </tr>
                     </table>
                     <a href="{% url 'doctor:doctor-update' request.user.id %}" class="text-decoration-none">
@@ -148,81 +143,6 @@
                 <p class="text-danger text-center">Not updated yet</p>
                 {% endif %}
                 <hr>
-            </div>
-            <div class="col-lg-4 px-md-3 mt-3">
-                <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-warning">History</h5>
-                <div>
-                    <table cellpadding="5" class="m-auto">
-                        <tr class="d-flex justify-content-between">
-                            <td>Name:</td>
-                            <td>Sravan kumar</td>
-                        </tr>
-                        <tr class="d-flex justify-content-between">
-                            <td>age:</td>
-                            <td>28</td>
-                        </tr>
-                        <tr class="d-flex justify-content-between">
-                            <td>Gender:</td>
-                            <td>Male</td>
-                        </tr>
-                        <tr class="d-flex justify-content-between">
-                            <td>Phone:</td>
-                            <td>8086183640</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <div class="col-lg-4 px-md-3 mt-3">
-                <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-warning">Account</h5>
-                <div>
-                    <table cellpadding="5" class="m-auto">
-                        <tr class="d-flex justify-content-between">
-                            <td>Name:</td>
-                            <td>Sravan kumar</td>
-                        </tr>
-                        <tr class="d-flex justify-content-between">
-                            <td>age:</td>
-                            <td>28</td>
-                        </tr>
-                        <tr class="d-flex justify-content-between">
-                            <td>Gender:</td>
-                            <td>Male</td>
-                        </tr>
-                        <tr class="d-flex justify-content-between">
-                            <td>Phone:</td>
-                            <td>8086183640</td>
-                        </tr>
-                    </table>
-                    <a href="" class="text-decoration-none">
-                        <h6 class="text-center border-bottom mx-5 px-3 py-2 shadow rounded border-info">Account</h6>
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-4 px-md-3 mt-3">
-                <h5 class="text-center border-bottom border-4 px-3 py-2 shadow rounded border-warning">Account</h5>
-                <div>
-                    <table cellpadding="5" class="m-auto">
-                        <tr class="d-flex justify-content-between">
-                            <td>Name:</td>
-                            <td>Sravan kumar</td>
-                        </tr>
-                        <tr class="d-flex justify-content-between">
-                            <td>age:</td>
-                            <td>28</td>
-                        </tr>
-                        <tr class="d-flex justify-content-between">
-                            <td>Gender:</td>
-                            <td>Male</td>
-                        </tr>
-                        <tr class="d-flex justify-content-between">
-                            <td>Phone:</td>
-                            <td>8086183640</td>
-                        </tr>
-                    </table>
-                    <a href="" class="text-decoration-none">
-                        <h6 class="text-center border-bottom mx-5 px-3 py-2 shadow rounded border-info">Account</h6>
-                    </a>
-                </div>
             </div>
     </div>
 

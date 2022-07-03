@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container px-4 py-2" id="icon-grid">
-    <div class="d-flex">
+    <div class="d-flex position-absolute start-50 translate-middle mt-4">
         {% if messages %}
             {% for message in messages %}
                 <div class="alert border m-auto text-success" style="background: #a6ffbe">
@@ -29,7 +29,7 @@
                 <div class="d-flex align-items-center">
                     <small class="text-muted">You can dislike this post here..!</small>
                     <a href="{% url 'blog:like-article' post.id %}">
-                        <i class='bx bx-dislike bx-sm bx-tada-hover text-success btn' style="border: none;"></i>
+                        <i class='bx bx-dislike bx-sm bx-tada-hover text-danger btn' style="border: none;"></i>
                     </a>
                 </div>
                 {% else %}
