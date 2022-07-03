@@ -74,4 +74,4 @@ class AppointmentsView(ListView):
     template_name = 'doctor/appointments.html'
 
     def get_queryset(self):
-        return self.model.objects.filter(doctor=self.request.user).order_by('-date_time_start')
+        return self.model.objects.filter(doctor=self.request.user.doctor.id).order_by('-date_time_start')

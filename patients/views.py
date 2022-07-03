@@ -149,7 +149,8 @@ def available_slot(request):
     appointments = Appointments.objects.filter(
         Q(doctor_id=doctor_id) & Q(date=modified_date) & (Q(status="upcoming") | Q(status="ongoing"))
     )
-    doctor = CustomUser.objects.get(pk=doctor_id).doctor
+
+    doctor = Doctors.objects.get(pk=doctor_id)
 
     # take starting and ending time of day of the requested doctor
     start_time, end_time = getStartEndTime(doctor, day, modified_date)
