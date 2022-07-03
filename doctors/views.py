@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import UpdateView, ListView
 
 from accounts.models import CustomUser
-from doctors.forms import DoctorDetailsForm
+from doctors.forms import DoctorDetailsForm, AvailableTimeUpdationForm
 from doctors.models import Doctors, Specialities
 from patients.forms import PatientUpdateForm
 from patients.models import Appointments
@@ -32,11 +32,17 @@ class UpdatePatientView(UpdateView):
 
 
 def profile(request):
-    doctor = Doctors.objects.get(details_id=request.user.id)
+    try:
+        doctor = Doctors.objects.get(details_id=request.user.id)
+        form = AvailableTimeUpdationForm(instance=doctor)
+    except:
+        doctor = None
+        form = AvailableTimeUpdationForm()
     specialities = Specialities.objects.all()
     context = {
         'doctor': doctor,
-        'specialities': specialities
+        'specialities': specialities,
+        'form': form
     }
     return render(request, 'doctor/profile.html', context)
 
@@ -51,6 +57,15 @@ def update_details(request):
     doctor.charge = charge
     doctor.save()
     return redirect('doctor:profile')
+
+
+def update_available_time(request, d_id):
+    form = AvailableTimeUpdationForm(request.POST, instance=Doctors.objects.get(id=d_id))
+    if form.is_valid():
+        form.save()
+        messages.success(request, "Available time updated..")
+        return redirect('doctor:profile')
+    return redirect('doctor:profile', {'form': form})
 
 
 class AppointmentsView(ListView):

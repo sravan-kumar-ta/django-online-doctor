@@ -19,4 +19,7 @@ class PostForm(forms.ModelForm):
             'image': forms.FileInput(attrs={
                 'class': 'form-control',
             }),
+            'is_public': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            })
         }

@@ -54,11 +54,9 @@
                     <p class="card-text mb-auto">{{ post.content|truncatechars:100 }}</p>
                 <div class="d-flex justify-content-between">
                     <a href="{% url 'blog:article-detail' post.pk %}" class="stretched-link">Continue reading...</a>
-                    <div class="d-flex">
-                        <div class="mx-2 border-bottom border-info">
-                            {{ post.total_likes }}
-                            <i class="fa fa-thumbs-up text-success" aria-hidden="true"></i>
-                        </div>
+                    <div>
+                        {{ post.total_likes }}
+                        <i class="fa fa-thumbs-up text-success" aria-hidden="true"></i>
                     </div>
                 </div>
                 </div>
