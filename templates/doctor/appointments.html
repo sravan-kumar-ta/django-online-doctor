@@ -3,45 +3,46 @@
 {% block content %}
 
 <div class="container px-4 py-2" id="icon-grid">
-    <div class="d-flex">
-        <h2 class="pb-2 border-bottom">Appointments</h2>
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert border m-auto text-success" style="background: #a6ffbe">
-                    <span class="icon">
-                        <i class="fas fa-check"></i>
-                    </span>
-                    <span class="text px-5 fw-bold">{{ message }}</span>
-                    <button type="button" class="close pr-2 rounded" data-dismiss="alert" aria-label="Close" style="background: #ccffda; border: 1px solid #ff5959;color: #FF6363">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {% endfor %}
-        {% endif %}
+    <div class="d-flex align-items-center">
+        <h2 class="pb-2 border-bottom me-4">Appointments</h2>
+        <b>Filter:</b>
+        <a href="{% url 'doctor:appointments-filter' 1 %}" class="btn btn-primary btn-sm mx-2">Upcoming only</a>
+        <a href="{% url 'doctor:appointments-filter' 2 %}" class="btn btn-primary btn-sm mx-2">Active only</a>
+        <a href="{% url 'doctor:appointments-filter' 3 %}" class="btn btn-primary btn-sm mx-2">Completed only</a>
     </div>
     <div class="row px-5">
         <div class="col-lg-8 mt-3">
             {% if appointments %}
             <table class="table table-striped">
                 <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Patient</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Time</th>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Patient</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Time</th>
+                    {% if filter and filter == 2 %}
+                        <th scope="col">Chat</th>
+                    {% else %}
                         <th scope="col">Status</th>
-                    </tr>
+                    {% endif %}
+                </tr>
                 </thead>
                 <tbody>
-                    {% for appointment in appointments %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</td>
-                        <td>{{ appointment.date }}</td>
-                        <td>{{ appointment.time }}</td>
+                {% for appointment in appointments %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</td>
+                    <td>{{ appointment.date }}</td>
+                    <td>{{ appointment.time }}</td>
+                    {% if filter and filter == 2 %}
+                        <td>
+                            <a href="" class="btn btn-primary btn-sm">Open Chat</a>
+                        </td>
+                    {% else %}
                         <td>{{ appointment.status }}</td>
-                    </tr>
-                    {% endfor %}
+                    {% endif %}
+                </tr>
+                {% endfor %}
                 </tbody>
             </table>
             {% else %}
@@ -49,43 +50,6 @@
             {% endif %}
         </div>
     </div>
-
-<!--modal start    -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">You can update details from here</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form method="post" action="{% url 'doctor:update-details' %}">
-                {% csrf_token %}
-                <table class="m-auto" cellpadding="5">
-                    <tr class="d-flex justify-content-between align-items-center">
-                        <td>Specialized in:</td>
-                        <td>
-                            <select class="form-control" name="special">
-                                {% for speciality in specialities %}
-                                <option  value="{{speciality.id}}" {% if doctor.specialized_in.title == speciality.title %} selected {% endif %}>{{ speciality.title }}</option>
-                                {% endfor %}
-                            </select>
-                    </tr>
-                    <tr class="d-flex justify-content-between align-items-center">
-                        <td>Charge</td>
-                        <td><input value="{{ doctor.charge }}" required type="number" name="charge" placeholder="Name" class="form-control"></td>
-                    </tr>
-                </table>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-<!--modal end    -->
 </div>
 
 {% endblock %}

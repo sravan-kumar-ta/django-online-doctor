@@ -197,3 +197,22 @@ def create_appointment(request, d_id, app_date, start_time):
     appointment.save()
 
     return redirect('patient:home')
+
+
+class AppointmentsListView(ListView):
+    model = Appointments
+    template_name = 'patient/appointments.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        currentTime = timezone.make_aware(datetime.now())
+        appointments = Appointments.objects.filter(patient=self.request.user)
+        app_complete = appointments.filter(Q(date_time_end__lt=currentTime))
+        app_active = appointments.filter(Q(date_time_end__gte=currentTime) & Q(date_time_start__lte=currentTime))
+        app_upcoming = appointments.filter(Q(date_time_start__gt=currentTime))
+        context = {
+            'app_complete': app_complete,
+            'app_active': app_active,
+            'app_upcoming': app_upcoming,
+        }
+        return context

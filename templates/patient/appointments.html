@@ -1,0 +1,118 @@
+{% extends "patient/base.html" %}
+
+{% block content %}
+<div class="container mb-4">
+    <div class="row mt-4">
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button bg-success text-white" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        <h4>Active Appointments</h4>
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                     data-bs-parent="#accordionExample">
+                    <div class="accordion-body bg-success p-2 text-dark bg-opacity-10">
+                        {% if app_active %}
+                        {% for appointment in app_active %}
+                        <div class="shadow col d-flex align-items-center justify-content-around m-4 px-4 py-2 rounded border border-warning">
+                            <div class="d-flex align-items-end">
+                                <h4 class="text-capitalize">Dr.&nbsp{{ appointment.doctor.first_name }}</h4>
+                                &nbsp<h4>{{ appointment.doctor.last_name }}</h4>&nbsp
+                                <h6 class="text-muted">({{ appointment.doctor.doctor.specialized_in }})</h6>
+                            </div>
+                            <div class="d-flex align-items-center btn btn-primary btn-sm">
+                                <i class="fa fa-comments me-3" aria-hidden="true"></i>
+                                <b>Open Chat</b>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="d-flex align-items-center justify-content-around">
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-exclamation-triangle text-warning opacity-75" aria-hidden="true"></i>
+                                <h3 class="mx-3">No active appointments</h3>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed bg-success text-white" type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <h4>Upcoming Appointments</h4>
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                     data-bs-parent="#accordionExample">
+                    <div class="accordion-body bg-success p-2 text-dark bg-opacity-10">
+                        {% if app_upcoming %}
+                        {% for appointment in app_upcoming %}
+                        <div class="shadow col d-flex align-items-center justify-content-around m-4 px-4 py-2 rounded border border-warning">
+                            <div class="d-flex align-items-end">
+                                <h4 class="text-capitalize">Dr.&nbsp{{ appointment.doctor.first_name }}</h4>
+                                &nbsp<h4>{{ appointment.doctor.last_name }}</h4>&nbsp
+                                <h6 class="text-muted">({{ appointment.doctor.doctor.specialized_in }})</h6>
+                            </div>
+                            <div class="d-flex ">
+                                <i class="fa fa-calendar-check me-1" aria-hidden="true"></i>
+                                <h6>{{ appointment.date_time_start }}</h6>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="d-flex align-items-center justify-content-around">
+                            <div class="d-flex align-items-center text-muted">
+                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                <h3 class="mx-3">No upcoming appointments</h3>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed bg-success text-white" type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        <h4>Completed Appointments</h4>
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                     data-bs-parent="#accordionExample">
+                    <div class="accordion-body bg-success p-2 text-dark bg-opacity-10">
+                        {% if app_complete %}
+                        {% for appointment in app_complete %}
+                        <div class="shadow col d-flex align-items-center justify-content-around m-4 px-4 py-2 rounded border border-warning">
+                            <div class="d-flex align-items-end">
+                                <h4 class="text-capitalize">Dr.&nbsp{{ appointment.doctor.first_name }}</h4>
+                                &nbsp<h4>{{ appointment.doctor.last_name }}</h4>&nbsp
+                                <h6 class="text-muted">({{ appointment.doctor.doctor.specialized_in }})</h6>
+                            </div>
+                            <div class="d-flex ">
+                                <i class="fa fa-calendar-check me-1" aria-hidden="true"></i>
+                                <h6>{{ appointment.date_time_start }}</h6>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="d-flex align-items-center justify-content-around">
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-exclamation-triangle text-warning opacity-75" aria-hidden="true"></i>
+                                <h3 class="mx-3">No completed appointments</h3>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

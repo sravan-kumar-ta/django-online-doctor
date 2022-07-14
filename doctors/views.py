@@ -1,6 +1,10 @@
+from datetime import datetime
+
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic import UpdateView, ListView
 
 from accounts.models import CustomUser
@@ -75,3 +79,21 @@ class AppointmentsView(ListView):
 
     def get_queryset(self):
         return self.model.objects.filter(doctor=self.request.user.doctor.id).order_by('-date_time_start')
+
+
+def appointments_filter(request, filter):
+    appointments = Appointments.objects.filter(doctor=request.user.doctor.id)
+    currentTime = timezone.make_aware(datetime.now())
+    if filter == 1:
+        appointments = appointments.filter(Q(date_time_start__gt=currentTime))
+    if filter == 2:
+        appointments = appointments.filter(Q(date_time_end__gte=currentTime) & Q(date_time_start__lte=currentTime))
+    if filter == 3:
+        appointments = appointments.filter(Q(date_time_end__lt=currentTime))
+
+    context = {
+        'appointments': appointments,
+        'filter': filter
+    }
+
+    return render(request, 'doctor/appointments.html', context)

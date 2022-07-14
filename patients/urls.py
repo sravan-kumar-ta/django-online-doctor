@@ -11,6 +11,7 @@ urlpatterns = [
     path('profile/member/<int:m_id>/update/', views.UpdateMemberView.as_view(), name='member-update'),
     path('profile/patient/<int:p_id>/update/', views.UpdatePatientView.as_view(), name='patient-update'),
     path('profile/member/<int:m_id>/delete/', views.delete_member, name='member-delete'),
+    path('appointments/', views.AppointmentsListView.as_view(), name='appointments'),
 
 
     path('find-available-slot/doctor/ajax/', views.available_slot, name='available-slot'),

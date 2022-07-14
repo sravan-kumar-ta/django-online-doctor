@@ -10,4 +10,5 @@ urlpatterns = [
     path('details/update/', views.update_details, name="update-details"),
     path('available-time/update/<int:dtr_id>/', views.update_available_time, name="update-times"),
     path('appointments/', views.AppointmentsView.as_view(), name="appointments"),
+    path('appointments/<int:filter>/', views.appointments_filter, name="appointments-filter"),
 ]
