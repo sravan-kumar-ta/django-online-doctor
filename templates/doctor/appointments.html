@@ -36,7 +36,7 @@
                     <td>{{ appointment.time }}</td>
                     {% if filter and filter == 2 %}
                         <td>
-                            <a href="" class="btn btn-primary btn-sm">Open Chat</a>
+                            <a href="{% url 'chat' appointment.id %}" class="btn btn-primary btn-sm">Open Chat</a>
                         </td>
                     {% else %}
                         <td>{{ appointment.status }}</td>

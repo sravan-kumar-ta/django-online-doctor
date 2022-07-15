@@ -18,14 +18,14 @@
                         {% for appointment in app_active %}
                         <div class="shadow col d-flex align-items-center justify-content-around m-4 px-4 py-2 rounded border border-warning">
                             <div class="d-flex align-items-end">
-                                <h4 class="text-capitalize">Dr.&nbsp{{ appointment.doctor.first_name }}</h4>
-                                &nbsp<h4>{{ appointment.doctor.last_name }}</h4>&nbsp
-                                <h6 class="text-muted">({{ appointment.doctor.doctor.specialized_in }})</h6>
+                                <h4 class="text-capitalize">Dr.&nbsp{{ appointment.doctor.details.first_name }}</h4>
+                                &nbsp<h4>{{ appointment.doctor.details.last_name }}</h4>&nbsp
+                                <h6 class="text-muted">({{ appointment.doctor.specialized_in }})</h6>
                             </div>
-                            <div class="d-flex align-items-center btn btn-primary btn-sm">
+                            <a href="{% url 'chat' appointment.id %}" class="d-flex align-items-center btn btn-primary btn-sm">
                                 <i class="fa fa-comments me-3" aria-hidden="true"></i>
                                 <b>Open Chat</b>
-                            </div>
+                            </a>
                         </div>
                         {% endfor %}
                         {% else %}
@@ -54,9 +54,9 @@
                         {% for appointment in app_upcoming %}
                         <div class="shadow col d-flex align-items-center justify-content-around m-4 px-4 py-2 rounded border border-warning">
                             <div class="d-flex align-items-end">
-                                <h4 class="text-capitalize">Dr.&nbsp{{ appointment.doctor.first_name }}</h4>
-                                &nbsp<h4>{{ appointment.doctor.last_name }}</h4>&nbsp
-                                <h6 class="text-muted">({{ appointment.doctor.doctor.specialized_in }})</h6>
+                                <h4 class="text-capitalize">Dr.&nbsp{{ appointment.doctor.details.first_name }}</h4>
+                                &nbsp<h4>{{ appointment.doctor.details.last_name }}</h4>&nbsp
+                                <h6 class="text-muted">({{ appointment.doctor.specialized_in }})</h6>
                             </div>
                             <div class="d-flex ">
                                 <i class="fa fa-calendar-check me-1" aria-hidden="true"></i>
@@ -90,9 +90,9 @@
                         {% for appointment in app_complete %}
                         <div class="shadow col d-flex align-items-center justify-content-around m-4 px-4 py-2 rounded border border-warning">
                             <div class="d-flex align-items-end">
-                                <h4 class="text-capitalize">Dr.&nbsp{{ appointment.doctor.first_name }}</h4>
-                                &nbsp<h4>{{ appointment.doctor.last_name }}</h4>&nbsp
-                                <h6 class="text-muted">({{ appointment.doctor.doctor.specialized_in }})</h6>
+                                <h4 class="text-capitalize">Dr.&nbsp{{ appointment.doctor.details.first_name }}</h4>
+                                &nbsp<h4>{{ appointment.doctor.details.last_name }}</h4>&nbsp
+                                <h6 class="text-muted">({{ appointment.doctor.specialized_in }})</h6>
                             </div>
                             <div class="d-flex ">
                                 <i class="fa fa-calendar-check me-1" aria-hidden="true"></i>

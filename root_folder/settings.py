@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'patients',
     'blogs',
     'django.contrib.humanize',
+    'chat',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -73,6 +75,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'root_folder.wsgi.application'
+ASGI_APPLICATION = 'root_folder.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    }
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

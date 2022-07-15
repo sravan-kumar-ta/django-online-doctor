@@ -179,7 +179,7 @@ def create_appointment(request, d_id, app_date, start_time):
     out_time = datetime.strftime(in_time, "%H:%M:%S")  # datetime.datetime to str (time only) --> 21:59:00
     new_time = datetime.strptime(out_time, "%H:%M:%S").time()  # str to datetime.datetime (correct time) --> 21:59:00
 
-    doctor = CustomUser.objects.get(pk=d_id)
+    doctor = Doctors.objects.get(pk=d_id)
     patient = CustomUser.objects.get(pk=request.user.id)
     appointment_date = datetime.strptime(app_date, '%Y-%m-%d').date()
     modified_date = datetime.combine(date=appointment_date, time=new_time)
