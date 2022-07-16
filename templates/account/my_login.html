@@ -1,0 +1,68 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+{% load crispy_forms_filters %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <div class="row justify-content-center">
+        <div class="col-xl-4 col-lg-6 col-md-6 border border-info rounded shadow px-5 py-4 mt-auto"
+             style="position: absolute; top:50%; transform: translate(0, -50%)">
+            <h2 class="text-center text-primary">Login</h2>
+            <hr>
+
+            <div class="socialaccount_ballot text-center">
+
+                <div class="socialaccount_providers">
+                    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+                </div>
+
+                <div class="login-or border-top border-bottom my-3">{% trans 'OR' %}</div>
+
+            </div>
+
+
+            <form method="post">
+                <input type="hidden" name="csrfmiddlewaretoken"
+                       value="sclCHKzmlGNq6orJEyd7LKCQ97fxwCWCEbUfAAp1VTfqUHMfPLnKLSkhGIeKqAjG">
+                <div class="d-flex justify-content-center mb-3 text-success">
+                    <div class="mx-3">
+                        <input type="radio" id="doctor" style="cursor: pointer" name="user" value="1">
+                        <label for="doctor" style="cursor: pointer">Doctor</label>
+                    </div>
+                    <div>
+                        <input checked type="radio" id="patient" style="cursor: pointer" name="user" value="2">
+                        <label for="patient" style="cursor: pointer">Patient</label>
+                    </div>
+                </div>
+                <table class="m-auto" cellpadding="5">
+
+                    <tr class="d-flex justify-content-between align-items-center">
+                        <td><label for="id_username">Username:</label></td>
+                        <td><input type="text" name="username" class="form-control" placeholder="Username" required
+                                   id="id_username"></td>
+                    </tr>
+
+                    <tr class="d-flex justify-content-between align-items-center">
+                        <td><label for="id_password">Password:</label></td>
+                        <td><input type="password" name="password" class="form-control" placeholder="Password" required
+                                   id="id_password"></td>
+                    </tr>
+
+                </table>
+                <div class="text-center">
+                    <input type="submit" class="btn btn-primary mt-4 mb-2 px-5" value="Login"><br>
+                    <a href="/accounts/register/" class="text-decoration-none">
+                        <span>Create an account</span>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
