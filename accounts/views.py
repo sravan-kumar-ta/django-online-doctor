@@ -56,11 +56,11 @@ def user_role_check(request):
         elif user_data == '2':
             user.role = 'patient'
         else:
-            redirect('login')
+            return redirect('login')
         user.save()
         return redirect('patient:home')
     else:
         if user.role == 'admin':
-            return render(request, 'auth/select_role.html')
+            return render(request, 'account/select_role.html')
         else:
-            redirect('patient:home')
+            return redirect('patient:home')

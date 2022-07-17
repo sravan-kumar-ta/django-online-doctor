@@ -1,45 +1,53 @@
 {% extends 'doctor/base.html' %}
 {% load static %}
 {% load humanize %}
+{% block title %}My Blogs{% endblock %}
 
 {% block content %}
 
 <div class="container px-4 py-2" id="icon-grid">
     <div class="d-flex align-items-center">
         <h2 class="pb-2 border-bottom">Blogs</h2>
-        <a href="{% url 'blog:add-article' %}" class="mx-3 text-decoration-none btn btn-outline-primary">Create a new blog</a>
+        {% if posts %}
+        <a href="{% url 'blog:add-article' %}" class="mx-3 text-decoration-none btn btn-outline-primary">Create a new
+            blog</a>
+        {% endif %}
         {% if messages %}
-            {% for message in messages %}
-                <div class="alert border m-auto text-success position-absolute start-50 translate-middle mt-5" style="background: #a6ffbe">
+        {% for message in messages %}
+        <div class="alert border m-auto text-success position-absolute start-50 translate-middle mt-5"
+             style="background: #a6ffbe">
                     <span class="icon">
                         <i class="fas fa-check"></i>
                     </span>
-                    <span class="text px-5 fw-bold">{{ message }}</span>
-                    <button type="button" class="close pr-2 rounded" data-dismiss="alert" aria-label="Close" style="background: #ccffda; border: 1px solid #ff5959;color: #FF6363">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {% endfor %}
+            <span class="text px-5 fw-bold">{{ message }}</span>
+            <button type="button" class="close pr-2 rounded" data-dismiss="alert" aria-label="Close"
+                    style="background: #ccffda; border: 1px solid #ff5959;color: #FF6363">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
         {% endif %}
     </div>
     <div class="row mb-2">
+        {% if posts %}
         {% for post in posts %}
         <div class="col-md-6">
             <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                 <div class="col p-4 d-flex flex-column position-static">
                     <h3 class="mb-0">{{ post.title|truncatechars:20 }}</h3>
                     <div class="d-flex text-muted">
-                        <p class="text-capitalize">Dr&nbsp;{{ post.author.first_name }}&nbsp;{{ post.author.last_name }}</p>
+                        <p class="text-capitalize">Dr&nbsp;{{ post.author.first_name }}&nbsp;{{ post.author.last_name
+                            }}</p>
                         &nbsp;|&nbsp;<p class="text-capitalize">{{ post.date|naturalday }}</p>
                     </div>
                     <p class="card-text mb-auto">{{ post.content|truncatechars:100 }}</p>
-                <div class="d-flex justify-content-between">
-                    <a href="{% url 'blog:article-detail' post.pk %}" class="stretched-link">Continue reading...</a>
-                    <div>
-                        {{ post.total_likes }}
-                        <i class="fa fa-thumbs-up text-success" aria-hidden="true"></i>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'blog:article-detail' post.pk %}" class="stretched-link">Continue reading...</a>
+                        <div>
+                            {{ post.total_likes }}
+                            <i class="fa fa-thumbs-up text-success" aria-hidden="true"></i>
+                        </div>
                     </div>
-                </div>
                 </div>
                 {% if post.image %}
                 <div class="col-auto d-none d-lg-block mt-3">
@@ -53,32 +61,46 @@
             </div>
         </div>
         {% endfor %}
+        {% else %}
+        <h3 class="m-3 text-muted">You have not created a post yet...!
+            <a href="{% url 'blog:add-article' %}" class="mx-3 text-decoration-none btn btn-outline-primary">
+                Create a new one?
+            </a>
+        </h3>
+        {% endif %}
     </div>
 </div>
 
+
+{% if posts %}
 <ul class="pagination justify-content-center">
     {% if page_obj.has_previous %}
-        <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
-        </li>
+    <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+    </li>
     {% else %}
-        <li class="page-item disabled">
-            <a class="page-link" href="">&laquo; Previous</a>
-        </li>
+    <li class="page-item disabled">
+        <a class="page-link" href="">&laquo; Previous</a>
+    </li>
     {% endif %}
 
     {% for page_number in page_obj.paginator.page_range %}
-      <li class="page-item {% if page_obj.number == page_number %} active {% endif %}"><a class="page-link" href="?page={{page_number}}">{{page_number}}</a></li>
+    <li class="page-item {% if page_obj.number == page_number %} active {% endif %}"><a class="page-link"
+                                                                                        href="?page={{page_number}}">{{page_number}}</a>
+    </li>
     {% endfor %}
 
     {% if page_obj.has_next %}
-        <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a>
-        </li>
+    <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a>
+    </li>
     {% else %}
-        <li class="page-item disabled">
-            <a class="page-link" href="">Next &raquo;</a>
-        </li>
+    <li class="page-item disabled">
+        <a class="page-link" href="">Next &raquo;</a>
+    </li>
     {% endif %}
 </ul>
+{% endif %}
+
+
 {% endblock %}

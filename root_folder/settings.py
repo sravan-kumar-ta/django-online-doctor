@@ -160,3 +160,7 @@ SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
 LOGIN_REDIRECT_URL = 'select-role'
+
+
+# [WinError 10061] No connection could be made because the target machine actively refused it
+ACCOUNT_EMAIL_VERIFICATION = "none"

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>{% block title %}{% endblock %}</title>
     <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}"/>
     <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
@@ -23,7 +23,7 @@
                     </li>
                     {% url 'doctor:appointments' as doc_app %}
                     <li>
-                        <a href="{{doc_app}}" class="nav-link px-2 link-primary {% if request.path == doc_app %} border-bottom border-success border-4 rounded {% endif %}">Appointments</a>
+                        <a href="{{doc_app}}" class="nav-link px-2 link-primary {% if request.path == doc_app %} border-bottom border-success border-4 rounded {% endif %}">All Appointments</a>
                     </li>
                     {% url 'blog:blogs' as blogs %}
                     <li>
@@ -33,7 +33,6 @@
                     <li>
                         <a href="{{ my_blogs }}" class="nav-link px-2 link-primary {% if request.path == my_blogs %} border-bottom border-success border-4 rounded {% endif %}">My Blogs</a>
                     </li>
-                    <li><a href="#" class="nav-link px-2 link-primary">Chat</a></li>
                 </ul>
 
                 {% if request.user and request.user.is_authenticated and request.user.role == "doctor" and not request.user.doctor %}
