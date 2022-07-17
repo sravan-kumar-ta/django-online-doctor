@@ -9,7 +9,7 @@ from blogs.models import Posts
 
 
 def blogs(request):
-    posts = Posts.objects.filter(is_public=True).order_by('?')
+    posts = Posts.objects.filter(is_public=True).order_by('-id')
     paginator = Paginator(posts, 4)
 
     page_number = request.GET.get('page')
@@ -35,7 +35,12 @@ class ArticleDetailView(DetailView):
     model = Posts
     pk_url_kwarg = 'blog_id'
     context_object_name = 'post'
-    template_name = 'doctor/blogs/blog_detail.html'
+
+    def get_template_names(self):
+        if self.request.user.role == 'doctor':
+            return 'doctor/blogs/blog_detail.html'
+        else:
+            return 'patient/blogs/blog_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

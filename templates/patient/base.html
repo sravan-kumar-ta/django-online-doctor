@@ -22,10 +22,18 @@
                 </a>
 
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                    <li><a href="#" class="nav-link px-2 link-primary">Overview</a></li>
-                    <li><a href="#" class="nav-link px-2 link-primary">Overview</a></li>
-                    <li><a href="#" class="nav-link px-2 link-primary">Overview</a></li>
-                    <li><a href="{% url 'patient:appointments' %}" class="nav-link px-2 link-primary">Appointments</a></li>
+                    {% url 'patient:profile' as patient_prof %}
+                    <li>
+                        <a href="{{patient_prof}}" class="nav-link px-2 link-primary {% if request.path == patient_prof %} border-bottom border-success border-4 rounded {% endif %}">Profile</a>
+                    </li>
+                    {% url 'blog:blogs' as blogs %}
+                    <li>
+                        <a href="{{ blogs }}" class="nav-link px-2 link-primary {% if request.path == blogs %} border-bottom border-success border-4 rounded {% endif %}">Blogs</a>
+                    </li>
+                    {% url 'patient:appointments' as appointments %}
+                    <li>
+                        <a href="{{ appointments }}" class="nav-link px-2 link-primary {% if request.path == appointments %} border-bottom border-success border-4 rounded {% endif %}">Appointments</a>
+                    </li>
                 </ul>
 
                 {% if request.user and request.user.is_authenticated and request.user.role == "doctor" and not request.user.doctor %}

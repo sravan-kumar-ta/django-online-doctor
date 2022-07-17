@@ -63,6 +63,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'accounts.CustomMiddleware.LoginCheckMiddleWare',
 ]
 
 ROOT_URLCONF = 'root_folder.urls'
@@ -157,6 +158,7 @@ SITE_ID = 2
 
 SOCIALACCOUNT_QUERY_EMAIL = True
 
+# skip intermediate page on allauth signup
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
 LOGIN_REDIRECT_URL = 'select-role'

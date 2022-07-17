@@ -1,0 +1,64 @@
+{% extends 'patient/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}Blog{% endblock %}
+
+{% block content %}
+<div class="container px-4 py-2" id="icon-grid">
+    <div class="d-flex position-absolute start-50 translate-middle mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert border m-auto text-success" style="background: #a6ffbe">
+                    <span class="icon">
+                        <i class="fas fa-check"></i>
+                    </span>
+                    <span class="text px-5 fw-bold">{{ message }}</span>
+                    <button type="button" class="close pr-2 rounded" data-dismiss="alert" aria-label="Close" style="background: #ccffda; border: 1px solid #ff5959;color: #FF6363">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="row mx-2">
+        <div class="d-md-flex justify-content-around">
+            <div class="mx-2">
+                <h3>{{ post.title }}</h3>
+                <p class="text-muted">by&nbsp;<span class="text-info">Dr&nbsp;{{ post.author.first_name }}&nbsp;{{ post.author.last_name }}</span></p>
+                <p class="text-capitalize text-muted">{{ post.date|naturalday }}</p>
+                {% if liked %}
+                <div class="d-flex align-items-center">
+                    <small class="text-muted">You can dislike this post here..!</small>
+                    <a href="{% url 'blog:like-article' post.id %}">
+                        <i class='bx bx-dislike bx-sm bx-tada-hover text-danger btn' style="border: none;"></i>
+                    </a>
+                </div>
+                {% else %}
+                <div class="d-flex align-items-center">
+                    <small class="text-muted">You can like this post here..!</small>
+                    <a href="{% url 'blog:like-article' post.id %}">
+                        <i class='bx bx-like bx-sm bx-tada-hover text-success btn' style="border: none;"></i>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="mr-md-3">
+                {% if post.image %}
+                <img src="{{ post.image.url }}" alt="" style="max-height: 220px;">
+                {% else %}
+                <img src="{% static 'img/blog.jpg' %}" alt="" style="max-height: 220px">
+                {% endif %}
+            </div>
+        </div>
+        <div class="row mx-md-5 mt-3">
+            <p style="text-indent: 200px;">{{ post.content }}</p>
+        </div>
+        {% if post.author == request.user %}
+        <div class="text-center">
+            <a href="{% url 'blog:update-article' post.pk %}" class="btn btn-outline-warning px-5 rounded">Update</a>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
