@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'accounts',
     'doctors',
     'patients',
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -157,4 +159,4 @@ SOCIALACCOUNT_QUERY_EMAIL = True
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
-LOGIN_REDIRECT_URL = 'patient:home'
+LOGIN_REDIRECT_URL = 'select-role'

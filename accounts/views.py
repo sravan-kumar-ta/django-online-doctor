@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView
 
@@ -11,7 +11,7 @@ from accounts.models import CustomUser
 class CustomUserCreationView(CreateView):
     model = CustomUser
     form_class = CustomUserCreationForm
-    template_name = "auth/register.html"
+    template_name = "account/register.html"
     success_url = reverse_lazy("login")
 
     def form_valid(self, form):
@@ -24,7 +24,7 @@ class CustomUserCreationView(CreateView):
 
 class LoginView(FormView):
     form_class = LoginForm
-    template_name = 'auth/login.html'
+    template_name = 'account/login.html'
 
     def form_valid(self, form):
         user_data = self.request.POST.get("user")
@@ -45,3 +45,22 @@ class LoginView(FormView):
 def sign_out_view(request):
     logout(request)
     return redirect('patient:home')
+
+
+def user_role_check(request):
+    user = request.user
+    if request.method == 'POST':
+        user_data = request.POST.get("user")
+        if user_data == '1':
+            user.role = 'doctor'
+        elif user_data == '2':
+            user.role = 'patient'
+        else:
+            redirect('login')
+        user.save()
+        return redirect('patient:home')
+    else:
+        if user.role == 'admin':
+            return render(request, 'auth/select_role.html')
+        else:
+            redirect('patient:home')

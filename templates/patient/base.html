@@ -51,7 +51,7 @@
                             {% endif %}
                         {% endif %}
                     </a>
-                    <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1" style="">
+                    <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
                     <li><a class="dropdown-item" href="#">New project...</a></li>
                     <li><a class="dropdown-item" href="#">Settings</a></li>
                     <li><a class="dropdown-item" href="{% url 'patient:profile' %}">Profile</a></li>
@@ -62,8 +62,8 @@
                 {% else %}
 
                 <ul class="nav col-12 col-lg-auto mb-2 justify-content-center mb-md-0">
-                    <li><a href="{% url 'login' %}" class="btn btn-outline-success mx-3">Login</a></li>
-                    <li><a href="{% url 'register' %}" class="btn btn-outline-success">Register</a></li>
+                    <li><a href="{% url 'account_login' %}" class="btn btn-outline-success mx-3">Login</a></li>
+                    <li><a href="{% url 'user-registration' %}" class="btn btn-outline-success">Register</a></li>
                 </ul>
                 {% endif %}
             </div>
