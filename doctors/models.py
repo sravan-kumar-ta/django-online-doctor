@@ -33,6 +33,7 @@ class Doctors(models.Model):
     profile_image = models.ImageField(upload_to='images/doctors', null=True)
     specialized_in = models.ForeignKey(Specialities, on_delete=models.CASCADE)
     charge = models.PositiveIntegerField()
+    paypal_account = models.EmailField(max_length=70, null=True)
 
     sun_start = models.TimeField(null=True, blank=True)
     sun_end = models.TimeField(null=True, blank=True)

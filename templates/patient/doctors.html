@@ -65,32 +65,16 @@
 
 {% endblock %}
 
+{% block custom_scripts %}
+<script src="{% static 'scripts/patient/date_limits.js' %}"></script>
+<script src="{% static 'scripts/patient/paypal_payment.js' %}"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=AXsdUpNLAWgD0hBa_UyuYtfJprNknazt0VsBz4yoYwAIPwv-BKzstEA86hnwTeqOEIp1MYv2cs9XWAzH&enable-funding=venmo&currency=USD"
+data-sdk-integration-source="button-factory"></script>
+{% endblock %}
 
 {% block script %}
-
-console.log("connected to custom.js")
-
-const setMinMaxDate = (event)=>{
-    var today = new Date();
-    var dd = String(today.getDate() + 1).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0');
-    var yyyy = today.getFullYear();
-    today = yyyy + '-' + mm + '-' + dd;
-    event.target.min = today;
-
-    var today = new Date();
-    today.setDate(today.getDate() + 10);
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0');
-    var yyyy = today.getFullYear();
-    today = yyyy + '-' + mm + '-' + dd;
-    event.target.max = today;
-}
-
-
 function dateForAppointment(id){
     date = document.querySelector('#app-date-for-'+id).value;
-    console.log(date)
     document.getElementById('date-error-for-'+id).style.display = "none";
     if (date == ""){
         document.getElementById('date-error-for-'+id).style.display = "block";
@@ -166,15 +150,14 @@ function showFailure(target, id){
 }
 
 
-
 function showSelectedDateTime(id, date, time_start, time_end){
     let formatted_date = moment(date).format('Do MMMM YYYY');
 
     document.getElementById("available-times-for-"+id).innerHTML = "";
     let div = document.getElementById("date-and-time-for-"+id);
     let charge = document.getElementById("charge-for-doctor-"+id).innerHTML;
+    let paypal = 'myaccounttwo@gmail.com';
 
-    var anchor_id = "pay-to-proceed-"+id
     div.innerHTML="";
     div.classList.add("d-flex");
     div.classList.add("justify-content-center");
@@ -199,18 +182,60 @@ function showSelectedDateTime(id, date, time_start, time_end){
             </ul>
         </div>
         <div class="card-footer text-center">
-            <a id="${anchor_id}" class="btn btn-outline-success">
-                Done
-            </a>
+            <button onclick=\"showPayment('${charge}','${paypal}','${id}','${date}','${time_start}')\" class="btn btn-outline-success" id="pay-to-proceed-{{doctor.id}}">Proceed to Payment</button>
         </div>
     </div>
     `
-    var anchor_element = document.getElementById(anchor_id);
-    let link = "{% url 'patient:create-appointment' 5 555 77777 %}";
-    let new_link = link.replace("5", id).replace("555", date).replace("77777", time_start);
+}
 
-    anchor_element.href = new_link;
+var showPayment = (charge, paypal_acc, id, date, time) => {
+
+    // clear button section
+    document.getElementById('paypal-button-container-'+id).innerHTML="";
+
+    paypal.Buttons({
+        style: {
+            shape: 'pill',
+            color: 'gold',
+            layout: 'vertical',
+            label: 'pay',
+        },
+
+        createOrder: function (data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: parseFloat(charge),
+                    },
+                    payee : {
+                        email_address : paypal_acc,
+                    }
+                }]
+            });
+        },
+
+        onApprove: function (data, actions) {
+            return actions.order.capture().then(function (orderData) {
+                var transaction = orderData.purchase_units[0].payments.captures[0];
+                if(transaction.status === "COMPLETED"){
+                    a = document.querySelector('#successful-payment-'+id);
+                    // a.href = "/create_appointment/ajax/"+id+"/"+date +"/"+time+"/";
+                    let link = "{% url 'patient:create-appointment' 5 555 77777 %}";
+                    let new_link = link.replace("5", id).replace("555", date).replace("77777", time);
+                    a.href = new_link;
+                    a.click();
+                    console.log("Payment Done!");
+                }
+                else{
+                    console.log("payment Failed");
+                }
+            });
+        },
+
+        onError: function (err) {
+            console.log(err);
+        }
+    }).render('#paypal-button-container-'+id);
 }
 
 {% endblock %}
-

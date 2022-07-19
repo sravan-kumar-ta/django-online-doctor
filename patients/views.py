@@ -196,6 +196,7 @@ def create_appointment(request, d_id, app_date, start_time):
     )
     appointment.save()
 
+    messages.success(request, 'Your appointment has been scheduled...')
     return redirect('patient:home')
 
 

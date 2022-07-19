@@ -13,11 +13,13 @@ doctor_permissions = [
     'django.views.static',
     'patients.views',
     'accounts.views',
+    'doctors.views',
 ]
 
 patient_permissions = [
     'patients.views',
     'accounts.views',
+    'django.views.static',
 ]
 
 anonymous_user_permission = [
@@ -31,6 +33,8 @@ anonymous_user_permission = [
 class LoginCheckMiddleWare(MiddlewareMixin):
     def process_view(self, request, view_func, view_args, view_kwargs):
         module_name = view_func.__module__
+        print(module_name)
+        print(request.path)
         user = request.user
         if user.is_authenticated:
             if user.role == 'admin':
@@ -51,8 +55,8 @@ class LoginCheckMiddleWare(MiddlewareMixin):
             else:
                 return HttpResponseRedirect(reverse("login"))
         else:
-            print(request.path)
             if module_name in anonymous_user_permission or request.path == reverse('patient:home'):
                 pass
+                print("inner")
             else:
                 return HttpResponseRedirect(reverse("login"))

@@ -37,12 +37,21 @@
                     <!-- div where the available times will be shown -->
                 </div>
 
+                <a href="#" id="successful-payment-{{doctor.id}}" style="visibility: hidden;"></a>
+
 
                 <!-- some information kept hidden -->
                 <span style="visibility: hidden;" id="charge-for-doctor-{{doctor.id}}">{{ doctor.charge }}</span>
 
                 <!-- to show selected date and time -->
                 <div id="date-and-time-for-{{doctor.id}}"></div>
+
+                <!-- PayPal buttons for payment -->
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <div class="mt-5" id=paypal-button-container-{{doctor.id}}></div>
+                    </div>
+                </div>
 
             </div>
             <div class="modal-footer">

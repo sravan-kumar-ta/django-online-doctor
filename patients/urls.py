@@ -4,7 +4,7 @@ from patients import views
 app_name = 'patient'
 
 urlpatterns = [
-    path('', views.HomeView.as_view(), name='home'),
+    path('home/', views.HomeView.as_view(), name='home'),
     path('<str:s_slug>/doctors/', views.DoctorsListView.as_view(), name='doctors'),
     path('add_member/', views.add_family_member_view, name='add_member'),
     path('profile/', views.UserProfileView.as_view(), name='profile'),

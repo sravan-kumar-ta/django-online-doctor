@@ -6,6 +6,7 @@ from django.views.generic import CreateView, FormView
 
 from accounts.forms import CustomUserCreationForm, LoginForm
 from accounts.models import CustomUser
+from doctors.models import Doctors, Specialities
 
 
 class CustomUserCreationView(CreateView):
@@ -17,8 +18,6 @@ class CustomUserCreationView(CreateView):
     def form_valid(self, form):
         role = self.request.POST.get("role")
         form.instance.role = role
-        print(form.cleaned_data.get("password2"))
-        print(form.cleaned_data.get("username"))
         return super().form_valid(form)
 
 
@@ -32,14 +31,19 @@ class LoginView(FormView):
         password = form.cleaned_data.get("password")
         user = authenticate(self.request, username=username, password=password)
         if user_data == "1" and user and user.role == "doctor":
+            print("it is doctor")
             login(self.request, user)
             return redirect('doctor:profile')
         elif user_data == "2" and user and user.role == "patient":
+            print("it is patient")
             login(self.request, user)
             return redirect('patient:home')
         else:
             messages.error(self.request, "Invalid credentials..!")
             return redirect('login')
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Invalid Credentials')
 
 
 def sign_out_view(request):
