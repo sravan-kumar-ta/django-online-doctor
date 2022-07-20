@@ -10,6 +10,7 @@ class DoctorDetailsForm(forms.ModelForm):
         widgets = {
             'specialized_in': forms.Select(attrs={'class': 'form-control'}),
             'charge': forms.NumberInput(attrs={'class': 'form-control'}),
+            'paypal_account': forms.EmailInput(attrs={'class': 'form-control'}),
             'sun_start': forms.TimeInput(attrs={'type': 'time', 'required': False}),
             'sun_end': forms.TimeInput(attrs={'type': 'time', 'required': False}),
             'mon_start': forms.TimeInput(attrs={'type': 'time', 'required': False}),
@@ -38,7 +39,7 @@ class DoctorDetailsForm(forms.ModelForm):
 class AvailableTimeUpdationForm(forms.ModelForm):
     class Meta:
         model = Doctors
-        exclude = ['details', 'profile_image', 'specialized_in', 'charge']
+        exclude = ['details', 'profile_image', 'specialized_in', 'charge', 'paypal_account']
 
         widgets = {
             'sun_start': forms.TimeInput(attrs={'type': 'time', 'required': False}),

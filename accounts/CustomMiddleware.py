@@ -11,15 +11,18 @@ admin_permissions = [
 
 doctor_permissions = [
     'django.views.static',
-    'patients.views',
     'accounts.views',
     'doctors.views',
+    'blogs.views',
+    'chat.views',
 ]
 
 patient_permissions = [
     'patients.views',
     'accounts.views',
     'django.views.static',
+    'blogs.views',
+    'chat.views',
 ]
 
 anonymous_user_permission = [
@@ -27,6 +30,7 @@ anonymous_user_permission = [
     'django.contrib.auth.views',
     'django.contrib.admin.sites',
     'accounts.views',
+    'blogs.views',
 ]
 
 

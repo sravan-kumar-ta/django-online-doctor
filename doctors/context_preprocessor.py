@@ -14,18 +14,3 @@ def specialised_categories(request):
         'doctors': doctor
     }
     return context
-
-
-# class DoctorDetailsView(CreateView):
-#     model = Doctors
-#     form_class = DoctorDetailsForm
-#     template_name =
-#
-#
-# def doctor_details(request):
-#     if request.method == "POST":
-#         pass
-#     else:
-#         form = DoctorDetailsForm()
-#         return
-#

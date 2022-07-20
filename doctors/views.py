@@ -15,11 +15,15 @@ from patients.models import Appointments
 
 
 def add_doctor_details(request):
+    print('function called')
     if request.method == 'POST':
         form = DoctorDetailsForm(request.POST)
+        print('form opened')
         if form.is_valid():
+            print('form valid')
             form.instance.details = request.user
             form.save()
+            messages.success(request, 'Successfully added details')
     return redirect('doctor:profile')
 
 
@@ -42,10 +46,8 @@ def profile(request):
     except:
         doctor = None
         form = AvailableTimeUpdationForm()
-    specialities = Specialities.objects.all()
     context = {
         'doctor': doctor,
-        'specialities': specialities,
         'form': form
     }
     return render(request, 'doctor/profile.html', context)
@@ -54,12 +56,15 @@ def profile(request):
 def update_details(request):
     special_id = request.POST.get('special')
     charge = request.POST.get('charge')
+    paypal = request.POST.get('paypal')
     special = Specialities.objects.get(id=special_id)
 
     doctor = Doctors.objects.get(details_id=request.user.id)
     doctor.specialized_in = special
     doctor.charge = charge
+    doctor.paypal_account = paypal
     doctor.save()
+    messages.success(request, "Your account details updated..")
     return redirect('doctor:profile')
 
 
@@ -69,7 +74,7 @@ def update_available_time(request, dtr_id):
         form.save()
         messages.success(request, "Available time updated..")
         return redirect('doctor:profile')
-    return redirect('doctor:profile', {'form': form})
+    return redirect('doctor:profile')
 
 
 class AppointmentsView(ListView):
@@ -78,7 +83,12 @@ class AppointmentsView(ListView):
     template_name = 'doctor/appointments.html'
 
     def get_queryset(self):
-        return self.model.objects.filter(doctor=self.request.user.doctor.id).order_by('-date_time_start')
+        try:
+            # before adding doctor details there have no doctor table, so we can't retrieve appointments
+            # So before adding doctor details always run except block
+            return self.model.objects.filter(doctor=self.request.user.doctor.id).order_by('-date_time_start')
+        except:
+            return None
 
 
 def appointments_filter(request, filter):

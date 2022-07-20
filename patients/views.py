@@ -217,3 +217,26 @@ class AppointmentsListView(ListView):
             'app_upcoming': app_upcoming,
         }
         return context
+
+
+def demo_appointment(request):
+    patient = request.user
+    doctor = Doctors.objects.get(id=1)
+    today = datetime.today()
+    appointment_date = today.date()
+    appointment_time = today.time()
+    appointment_time_start = datetime.combine(date=appointment_date, time=appointment_time)
+    appointment_time_end = timezone.make_aware(appointment_time_start + timedelta(minutes=30))
+
+    appointment = Appointments.objects.create(
+        patient=patient,
+        doctor=doctor,
+        date=appointment_date,
+        time=appointment_time,
+        date_time_start=appointment_time_start,
+        date_time_end=appointment_time_end,
+        status='ongoing'
+    )
+    appointment.save()
+
+    return redirect('patient:appointments')

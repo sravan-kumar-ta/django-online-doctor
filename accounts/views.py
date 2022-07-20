@@ -6,7 +6,6 @@ from django.views.generic import CreateView, FormView
 
 from accounts.forms import CustomUserCreationForm, LoginForm
 from accounts.models import CustomUser
-from doctors.models import Doctors, Specialities
 
 
 class CustomUserCreationView(CreateView):
@@ -31,11 +30,10 @@ class LoginView(FormView):
         password = form.cleaned_data.get("password")
         user = authenticate(self.request, username=username, password=password)
         if user_data == "1" and user and user.role == "doctor":
-            print("it is doctor")
             login(self.request, user)
+            messages.success(self.request, 'Successfully logged in')
             return redirect('doctor:profile')
         elif user_data == "2" and user and user.role == "patient":
-            print("it is patient")
             login(self.request, user)
             return redirect('patient:home')
         else:

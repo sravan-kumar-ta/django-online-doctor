@@ -5,6 +5,7 @@
 {% block content %}
 
 <div class="container px-4 py-2" id="icon-grid">
+    {% if request.user.doctor %}
     <div class="d-flex align-items-center">
         <h2 class="pb-2 border-bottom me-4">Appointments</h2>
         <b>Filter:</b>
@@ -23,9 +24,9 @@
                     <th scope="col">Date</th>
                     <th scope="col">Time</th>
                     {% if filter and filter == 2 %}
-                        <th scope="col">Chat</th>
+                    <th scope="col">Chat</th>
                     {% else %}
-                        <th scope="col">Status</th>
+                    <th scope="col">Status</th>
                     {% endif %}
                 </tr>
                 </thead>
@@ -37,11 +38,11 @@
                     <td>{{ appointment.date }}</td>
                     <td>{{ appointment.time }}</td>
                     {% if filter and filter == 2 %}
-                        <td>
-                            <a href="{% url 'chat' appointment.id %}" class="btn btn-primary btn-sm">Open Chat</a>
-                        </td>
+                    <td>
+                        <a href="{% url 'chat' appointment.id %}" class="btn btn-primary btn-sm">Open Chat</a>
+                    </td>
                     {% else %}
-                        <td>{{ appointment.status }}</td>
+                    <td>{{ appointment.status }}</td>
                     {% endif %}
                 </tr>
                 {% endfor %}
@@ -52,6 +53,11 @@
             {% endif %}
         </div>
     </div>
+    {% else %}
+    <span class="mx-3">You need to add some details to get an appointment from the patients.</span>
+    <a data-bs-toggle="modal" data-bs-target="#doctor-details" href=""
+       class="border border-danger border-3 text-decoration-none rounded px-2">Add now?</a>
+    {% endif %}
 </div>
 
 {% endblock %}
