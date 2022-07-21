@@ -1,7 +1,9 @@
 import time
 from datetime import timedelta, datetime
 
+import humanize
 from django.contrib import messages
+from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -196,6 +198,20 @@ def create_appointment(request, d_id, app_date, start_time):
     )
     appointment.save()
 
+    email_date = humanize.naturaldate(appointment_date)
+    email_time = new_time.strftime("%I:%M %p")
+    email_message = 'Hai ' + patient.first_name + ',\n\n\tYour appointment successfully scheduled with ' +\
+                    'our ' + str(doctor.specialized_in) + ' doctor Dr.' + doctor.details.first_name + ' on ' +\
+                    str(email_date) + ' at ' + str(email_time) + '.\n\nThank you...'
+    mail_id = patient.email
+    send_mail(
+        'Appointment scheduled',
+        email_message,
+        'Online Doctor <your email id>',
+        [mail_id],
+        fail_silently=False,
+    )
+
     messages.success(request, 'Your appointment has been scheduled...')
     return redirect('patient:home')
 
@@ -238,5 +254,19 @@ def demo_appointment(request):
         status='ongoing'
     )
     appointment.save()
+
+    email_date = humanize.naturaldate(appointment_date)
+    email_time = appointment_time.strftime("%I:%M %p")
+    email_message = 'Hai ' + patient.first_name + ',\n\n\tYour appointment successfully scheduled with ' +\
+                    'our ' + str(doctor.specialized_in) + ' doctor Dr.' + doctor.details.first_name + ' on ' +\
+                    str(email_date) + ' at ' + str(email_time) + '.\n\nThank you...'
+    mail_id = patient.email
+    send_mail(
+        'Appointment scheduled',
+        email_message,
+        'Online Doctor <your email id>',
+        [mail_id],
+        fail_silently=False,
+    )
 
     return redirect('patient:appointments')

@@ -163,6 +163,13 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 
 LOGIN_REDIRECT_URL = 'select-role'
 
-
 # [WinError 10061] No connection could be made because the target machine actively refused it
 ACCOUNT_EMAIL_VERIFICATION = "none"
+
+# sent mail
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_HOST_USER = 'Your email id'
+EMAIL_HOST_PASSWORD = 'app password from two factor authentication'
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
