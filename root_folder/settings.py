@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-(a@(uuok6qqt7r#6i#3qhnyagf30ymmw%9u$5q$ll*^7dks&os
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
 # Application definition
 
@@ -163,7 +163,7 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 
 LOGIN_REDIRECT_URL = 'select-role'
 
-# [WinError 10061] No connection could be made because the target machine actively refused it
+# SMTPAuthenticationError at /accounts/github/login/callback/
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
 # sent mail

@@ -50,19 +50,28 @@ def sign_out_view(request):
 
 
 def user_role_check(request):
-    user = request.user
-    if request.method == 'POST':
-        user_data = request.POST.get("user")
-        if user_data == '1':
-            user.role = 'doctor'
-        elif user_data == '2':
-            user.role = 'patient'
+    try:
+        user = request.user
+        if request.method == 'POST':
+            user_data = request.POST.get("user")
+            if user_data == '1':
+                user.role = 'doctor'
+                user.save()
+                return redirect('doctor:profile')
+            elif user_data == '2':
+                user.role = 'patient'
+                user.save()
+                return redirect('patient:home')
+            else:
+                return redirect('logout')
         else:
-            return redirect('login')
-        user.save()
-        return redirect('patient:home')
-    else:
-        if user.role == 'admin':
-            return render(request, 'account/select_role.html')
-        else:
-            return redirect('patient:home')
+            if user.role == 'admin':
+                return render(request, 'account/select_role.html')
+            elif user.role == 'doctor':
+                return redirect('doctor:profile')
+            elif user.role == 'doctor':
+                return redirect('patient:home')
+            else:
+                return redirect('logout')
+    except:
+        return redirect('logout')
