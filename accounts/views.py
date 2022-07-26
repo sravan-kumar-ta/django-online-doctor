@@ -69,7 +69,7 @@ def user_role_check(request):
                 return render(request, 'account/select_role.html')
             elif user.role == 'doctor':
                 return redirect('doctor:profile')
-            elif user.role == 'doctor':
+            elif user.role == 'patient':
                 return redirect('patient:home')
             else:
                 return redirect('logout')
