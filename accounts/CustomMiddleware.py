@@ -33,6 +33,8 @@ anonymous_user_permission = [
     'accounts.views',
     'blogs.views',
     'allauth.socialaccount.providers.oauth2.views',
+    'rest_framework_simplejwt.views',
+    'api.views',
 ]
 
 

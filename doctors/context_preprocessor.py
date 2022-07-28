@@ -1,5 +1,3 @@
-from django.views.generic import CreateView
-
 from doctors.forms import DoctorDetailsForm
 from doctors.models import Specialities, Doctors
 
