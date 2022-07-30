@@ -1,10 +1,13 @@
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.generics import CreateAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from api.serializers import PostSerializer, UserSerializer
+from accounts.models import CustomUser
+from api.serializers import PostSerializer, UserSerializer, CustomUserSerializer
 from blogs.models import Posts
 
 
@@ -70,13 +73,16 @@ class PostViewSet(ModelViewSet):
             post.save()
             return Response({'message': 'Post liked'}, status=status.HTTP_201_CREATED)
 
-# http://localhost:8000/...
-# (GET) api/posts/ => get all post
-# (POST) api/posts/ => create new post
-# (GET) api/posts/11/ => get single post
-# (DELETE) api/posts/11/ => delete a post
-# (PUT) api/posts/11/ => update a post
-# (PATCH) api/posts/11/ => update a specific field post
-# (GET) api/posts/get_my_posts/ => get request user's post
-# (GET) api/posts/25/get_likes/ => get likes of a post
-# (POST) api/posts/25/like_or_dislike/ => like or dislike post
+
+class CreateUserView(CreateAPIView):
+    model = get_user_model()
+    serializer_class = CustomUserSerializer
+
+
+class UpdateUserView(UpdateAPIView):
+    permission_classes = [IsAuthenticated, ]
+    model = get_user_model()
+    serializer_class = CustomUserSerializer
+
+    def get_object(self):
+        return CustomUser.objects.get(id=self.request.user.id)

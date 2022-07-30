@@ -24,3 +24,22 @@ class PostSerializer(serializers.ModelSerializer):
         user = self.context.get('user')
         validated_data['is_public'] = True
         return Posts.objects.create(**validated_data, author=user)
+
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'first_name', 'last_name', 'email', 'gender', 'role', 'password', 'password2']
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
+
+    def create(self, validated_data):
+        password = self.validated_data['password']
+        password2 = self.validated_data['password2']
+        del validated_data['password2']
+        if password != password2:
+            raise serializers.ValidationError({'password': 'Passwords must match.'})
+        return CustomUser.objects.create_user(**validated_data)
