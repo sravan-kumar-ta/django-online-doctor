@@ -13,7 +13,9 @@ class CustomUser(AbstractUser):
         ("male", "Male"),
         ("female", "Female"),
     )
-    email = models.EmailField(_("email address"), blank=True, unique=True)
+    email = models.EmailField(_("email address"), unique=True)
     role = models.CharField(choices=role_options, default="admin", max_length=30)
     gender = models.CharField(choices=gender_options, max_length=20)
-    
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['email', 'username']

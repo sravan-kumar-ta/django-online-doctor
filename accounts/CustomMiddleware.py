@@ -8,6 +8,7 @@ admin_permissions = [
     'django.contrib.admin.sites',
     'django.contrib.admin.options',
     'accounts.views',
+    'django.contrib.auth.admin',
 ]
 
 doctor_permissions = [
