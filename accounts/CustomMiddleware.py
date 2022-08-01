@@ -34,7 +34,9 @@ anonymous_user_permission = [
     'blogs.views',
     'allauth.socialaccount.providers.oauth2.views',
     'rest_framework_simplejwt.views',
-    'api.views',
+    'api.blogs_and_users_view',
+    'api.doctor_view',
+    'django_rest_passwordreset.views',
 ]
 
 

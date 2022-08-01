@@ -4,10 +4,10 @@ from rest_framework.decorators import action
 from rest_framework.generics import CreateAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from accounts.models import CustomUser
-from api.serializers import PostSerializer, UserSerializer, CustomUserSerializer
+from api.serializers import PostSerializer, UserSerializer, CustomUserSerializer, ChangePasswordSerializer
 from blogs.models import Posts
 
 
@@ -79,10 +79,44 @@ class CreateUserView(CreateAPIView):
     serializer_class = CustomUserSerializer
 
 
-class UpdateUserView(UpdateAPIView):
-    permission_classes = [IsAuthenticated, ]
-    model = get_user_model()
+class UserAPIView(APIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = CustomUserSerializer
 
-    def get_object(self):
-        return CustomUser.objects.get(id=self.request.user.id)
+    def get(self, request, *args, **kwargs):
+        user = self.request.user
+        serializer = self.serializer_class(user)
+        return Response(serializer.data)
+
+    def patch(self, request, *args, **kwargs):
+        doctor = request.user
+        serializer = self.serializer_class(instance=doctor, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
+        else:
+            return Response({'error_message': 'invalid data'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
+class ChangePasswordView(UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ChangePasswordSerializer
+
+    def update(self, request, *args, **kwargs):
+        user = request.user
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            if not user.check_password(serializer.data.get('old_password')):
+                return Response(
+                    {'error_message': 'you entered old password is wrong'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            user.set_password(serializer.data.get('new_password'))
+            user.save()
+            return Response(
+                {'success_message': 'password updated successfully'},
+                status=status.HTTP_205_RESET_CONTENT
+            )
+        else:
+            return Response({'message': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)

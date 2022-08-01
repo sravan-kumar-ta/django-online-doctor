@@ -1,24 +1,29 @@
-from django.urls import path
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from api.blogs_and_users_view import PostViewSet, CreateUserView, UpdateUserView
+from api.blogs_and_users_view import PostViewSet, CreateUserView, UserAPIView, ChangePasswordView
 
 router = DefaultRouter()
 router.register('posts', PostViewSet, basename='posts')
 
 urlpatterns = [
     path('get_token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('user/register/', CreateUserView.as_view(), name='register'),
-    path('user/update/', UpdateUserView.as_view()),
+    path('user/register/', CreateUserView.as_view()),
+    path('user/', UserAPIView.as_view()),
+    path('change_password/', ChangePasswordView.as_view()),
+    path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
 ] + router.urls
 
 # http://localhost:8000/...
 # (POST) api/get_token/ => get token
 
 # (POST) api/user/register/ => create user
-# (PUT) api/user/update/ => update user
-# (PATCH) api/user/update/ => partial update user
+# (GET) api/user/ => get user
+# (PATCH) api/user/ => update user
+# (PUT) api/change_password/ => change password
+# (POST) api/password_reset/ => reset password
+# (POST) api/password_reset/confirm/ => reset password confirm
 
 # (GET) api/posts/ => get all post
 # (POST) api/posts/ => create new post

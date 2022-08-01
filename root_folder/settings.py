@@ -53,9 +53,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
-    # 'api',
+    'api',
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_rest_passwordreset',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -172,12 +173,16 @@ LOGIN_REDIRECT_URL = 'select-role'
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
 # sent mail
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+# print the mail in console for testing mail message
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 # JWT
 REST_FRAMEWORK = {
