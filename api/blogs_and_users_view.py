@@ -27,20 +27,20 @@ class PostViewSet(ModelViewSet):
         else:
             return Response({'message': 'Only doctors can create a blog.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-    def authenticated(self):
+    def is_author(self):
         instance = self.get_object()
         author = instance.author
         if self.request.user == author:
             return True
 
     def update(self, request, *args, **kwargs):
-        if self.authenticated():
+        if self.is_author():
             return super().update(request, *args, **kwargs)
         else:
             return Response({'message': 'Only authors can edit post.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
     def destroy(self, request, *args, **kwargs):
-        if self.authenticated():
+        if self.is_author():
             return super().destroy(request, *args, **kwargs)
         else:
             return Response({'message': 'Only authors can delete a post.'}, status=status.HTTP_401_UNAUTHORIZED)
