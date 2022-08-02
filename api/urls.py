@@ -11,7 +11,7 @@ router.register('family_members', FamilyMemberViewSet, basename='family-members'
 router.register('appointment', AppointmentViewSet, basename='appointment')
 
 urlpatterns = [
-    path('get_token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('user/register/', CreateUserView.as_view()),
     path('user/', UserAPIView.as_view()),
     path('change_password/', ChangePasswordView.as_view()),
@@ -22,7 +22,7 @@ urlpatterns = [
 ] + router.urls
 
 # http://localhost:8000/...
-# (POST) api/get_token/ => get token
+# (POST) api/token/ => get token
 #  -----Account-----
 # (POST) api/user/register/ => create user
 # (GET) api/user/ => get user
@@ -52,3 +52,6 @@ urlpatterns = [
 # (POST) api/appointment => create an appointment
 # (GET) api/appointment => get my all appointment
 # (GET) api/appointment/44/ => get my single appointment
+# (PATCH) api/appointment/44/ => update status of an appointment
+#  -----Doctor-----
+#

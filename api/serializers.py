@@ -99,8 +99,12 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Appointments
-        fields = ('id', 'date', 'time', 'status', 'doctor')
+        fields = ('id', 'date', 'time', 'status', 'doctor', 'date_time_start', 'date_time_end')
         depth = 2
+        extra_kwargs = {
+            'date_time_start': {'write_only': True},
+            'date_time_end': {'write_only': True},
+        }
 
     def create(self, validated_data):
         patient = self.context.get('patient')

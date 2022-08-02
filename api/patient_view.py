@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django.db.models import Q
 from django.utils import timezone
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, BasePermission
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -86,8 +86,14 @@ class AvailableTimeView(APIView):
         return Response({'Response': response})
 
 
+class IsPatient(BasePermission):
+    def has_permission(self, request, view):
+        if request.user.role == 'patient':
+            return True
+
+
 class AppointmentViewSet(ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsPatient]
     serializer_class = AppointmentSerializer
 
     def get_queryset(self):
@@ -97,16 +103,23 @@ class AppointmentViewSet(ModelViewSet):
         doc_id = request.data.get('doc_id')
         date = request.data.get('date')
         time = request.data.get('time')
+        if doc_id is None or date is None or time is None:
+            return Response({
+                "doc_id": ["This field is required."],
+                "date": ["This field is required."],
+                "time": ["This field is required."]
+            }, status=status.HTTP_406_NOT_ACCEPTABLE)
+
         converted_date = datetime.strptime(date, "%Y-%m-%d").date()
         converted_time = datetime.strptime(time, "%H:%M:%S").time()
-        new_date = datetime.combine(date=converted_date, time=converted_time)
-        new_time = timezone.make_aware(new_date + timedelta(minutes=30))
+        date_time_start = datetime.combine(date=converted_date, time=converted_time)
+        date_time_end = timezone.make_aware(date_time_start + timedelta(minutes=30))
 
         request_data = {
             'date': converted_date,
             'time': converted_time,
-            'date_time_start': new_date,
-            'date_time_end': new_time,
+            'date_time_start': date_time_start,
+            'date_time_end': date_time_end,
             'status': 'upcoming'
         }
         context = {
@@ -119,3 +132,24 @@ class AppointmentViewSet(ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+    def partial_update(self, request, *args, **kwargs):
+        app_status = request.data.get('status') or None
+        if app_status is None:
+            return Response({"status": ["This field is required."]}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        request_data = {
+            'status': app_status
+        }  # just only update the status
+
+        serializer = self.get_serializer(instance=self.get_object(), data=request_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, *args, **kwargs):
+        return Response({'message': 'This content is not updatable'}, status=status.HTTP_403_FORBIDDEN)
+
+    def destroy(self, request, *args, **kwargs):
+        return Response({'message': 'This content is not destroyable'}, status=status.HTTP_403_FORBIDDEN)
