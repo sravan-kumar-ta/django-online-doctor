@@ -18,4 +18,4 @@ class CustomUser(AbstractUser):
     gender = models.CharField(choices=gender_options, max_length=20)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['email', 'username']
+    REQUIRED_FIELDS = ['username']

@@ -3,6 +3,8 @@ from rest_framework import serializers
 
 from accounts.models import CustomUser
 from blogs.models import Posts
+from doctors.models import Doctors, Specialities
+from patients.models import FamilyMembers, Appointments
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -59,3 +61,48 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('old_password', 'new_password')
+
+
+class FamilyMembersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FamilyMembers
+        fields = ('id', 'relation', 'name', 'age')
+
+    def create(self, validated_data):
+        user = self.context.get('user')
+        return FamilyMembers.objects.create(**validated_data, relation_with=user)
+
+
+class AvailableTimeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Doctors
+        exclude = ('details', 'profile_image', 'specialized_in', 'charge', 'paypal_account')
+
+
+class SpecialitiesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Specialities
+        exclude = ('slug',)
+
+
+class DoctorSerializer(serializers.ModelSerializer):
+    specialized_in = SpecialitiesSerializer()
+    details = UserSerializer()
+
+    class Meta:
+        model = Doctors
+        fields = ('id', 'profile_image', 'charge', 'details', 'specialized_in')
+
+
+class AppointmentSerializer(serializers.ModelSerializer):
+    doctor = DoctorSerializer(read_only=True)
+
+    class Meta:
+        model = Appointments
+        fields = ('id', 'date', 'time', 'status', 'doctor')
+        depth = 2
+
+    def create(self, validated_data):
+        patient = self.context.get('patient')
+        doctor = self.context.get('doctor')
+        return Appointments.objects.create(**validated_data, doctor=doctor, patient=patient)

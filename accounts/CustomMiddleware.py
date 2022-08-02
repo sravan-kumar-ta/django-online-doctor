@@ -38,6 +38,8 @@ anonymous_user_permission = [
     'api.blogs_and_users_view',
     'api.doctor_view',
     'django_rest_passwordreset.views',
+    'api.patient_view',
+    'django.views.static',
 ]
 
 
