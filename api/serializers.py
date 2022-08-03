@@ -85,7 +85,7 @@ class SpecialitiesSerializer(serializers.ModelSerializer):
         exclude = ('slug',)
 
 
-class DoctorSerializer(serializers.ModelSerializer):
+class DoctorSerializerForAppointment(serializers.ModelSerializer):
     specialized_in = SpecialitiesSerializer()
     details = UserSerializer()
 
@@ -95,7 +95,7 @@ class DoctorSerializer(serializers.ModelSerializer):
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
-    doctor = DoctorSerializer(read_only=True)
+    doctor = DoctorSerializerForAppointment(read_only=True)
 
     class Meta:
         model = Appointments
@@ -110,3 +110,30 @@ class AppointmentSerializer(serializers.ModelSerializer):
         patient = self.context.get('patient')
         doctor = self.context.get('doctor')
         return Appointments.objects.create(**validated_data, doctor=doctor, patient=patient)
+
+
+class DoctorSerializer(serializers.ModelSerializer):
+    specialized_in = SpecialitiesSerializer(read_only=True)
+    details = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Doctors
+        fields = ('id', 'profile_image', 'charge', 'paypal_account', 'details', 'specialized_in')
+
+    def validate(self, attrs):
+        charge = attrs.get('charge')
+        if charge > 1500 or charge < 100:
+            raise serializers.ValidationError({'charge': "charge should be < 1500 and > 100"})
+        return attrs
+
+    def update(self, instance, validated_data):
+        if self.context.get('special'):
+            special = self.context.get('special')
+            instance.specialized_in = special
+            instance.save()
+        return super().update(instance=instance, validated_data=validated_data)
+
+    def create(self, validated_data):
+        user = self.context.get('user')
+        special = self.context.get('special')
+        return Doctors.objects.create(**validated_data, details=user, specialized_in=special)

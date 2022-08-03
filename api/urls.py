@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from api.blogs_and_users_view import PostViewSet, CreateUserView, UserAPIView, ChangePasswordView
+from api.doctor_view import DoctorDetailsView, SpecialitiesView
 from api.patient_view import FamilyMemberViewSet, AvailableDateView, AvailableTimeView, AppointmentViewSet
 
 router = DefaultRouter()
@@ -19,12 +20,14 @@ urlpatterns = [
 
     path('dates/<int:doc_id>/', AvailableDateView.as_view()),
     path('times/<int:doc_id>/<str:a_date>/', AvailableTimeView.as_view()),
+    path('doctor/', DoctorDetailsView.as_view()),
+    path('specialities/', SpecialitiesView.as_view()),
 ] + router.urls
 
 # http://localhost:8000/...
 # (POST) api/token/ => get token
 #  -----Account-----
-# (POST) api/user/register/ => create user
+# (POST) api/user/register/ => create user  (No need token, all others should have token)
 # (GET) api/user/ => get user
 # (PATCH) api/user/ => update user
 # (PUT) api/change_password/ => change password
@@ -54,4 +57,6 @@ urlpatterns = [
 # (GET) api/appointment/44/ => get my single appointment
 # (PATCH) api/appointment/44/ => update status of an appointment
 #  -----Doctor-----
-#
+# (GET) api/doctor/ => get doctors details
+# (POST) api/doctor/ => create doctors details
+# (PUT) api/doctor/ => update doctors details
