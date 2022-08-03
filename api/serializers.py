@@ -118,7 +118,7 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Doctors
-        fields = ('id', 'profile_image', 'charge', 'paypal_account', 'details', 'specialized_in')
+        fields = '__all__'
 
     def validate(self, attrs):
         charge = attrs.get('charge')
