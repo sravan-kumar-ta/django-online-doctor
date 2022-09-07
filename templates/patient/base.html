@@ -16,24 +16,26 @@
     <header class="p-3 mb-3 border-bottom sticky-top bg-white">
         <div class="container">
             <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <a href="/" class="p-2 border rounded d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
+                <a href="{% url 'patient:home' %}" class="p-2 border rounded d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
                     <i class="fa fa-home"></i>
                     &nbspHome
                 </a>
 
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                    {% url 'patient:profile' as patient_prof %}
-                    <li>
-                        <a href="{{patient_prof}}" class="nav-link px-2 link-primary {% if request.path == patient_prof %} border-bottom border-success border-4 rounded {% endif %}">Profile</a>
-                    </li>
-                    {% url 'blog:blogs' as blogs %}
-                    <li>
-                        <a href="{{ blogs }}" class="nav-link px-2 link-primary {% if request.path == blogs %} border-bottom border-success border-4 rounded {% endif %}">Blogs</a>
-                    </li>
-                    {% url 'patient:appointments' as appointments %}
-                    <li>
-                        <a href="{{ appointments }}" class="nav-link px-2 link-primary {% if request.path == appointments %} border-bottom border-success border-4 rounded {% endif %}">Appointments</a>
-                    </li>
+                    {% if request.user and request.user.is_authenticated %}
+                        {% url 'patient:profile' as patient_prof %}
+                        <li>
+                            <a href="{{patient_prof}}" class="nav-link px-2 link-primary {% if request.path == patient_prof %} border-bottom border-success border-4 rounded {% endif %}">Profile</a>
+                        </li>
+                        {% url 'blog:blogs' as blogs %}
+                        <li>
+                            <a href="{{ blogs }}" class="nav-link px-2 link-primary {% if request.path == blogs %} border-bottom border-success border-4 rounded {% endif %}">Blogs</a>
+                        </li>
+                        {% url 'patient:appointments' as appointments %}
+                        <li>
+                            <a href="{{ appointments }}" class="nav-link px-2 link-primary {% if request.path == appointments %} border-bottom border-success border-4 rounded {% endif %}">Appointments</a>
+                        </li>
+                    {% endif %}
                 </ul>
 
                 {% if request.user and request.user.is_authenticated and request.user.role == "doctor" and not request.user.doctor %}
@@ -47,7 +49,7 @@
                 {% if request.user and request.user.is_authenticated %}
                 <div class="dropdown text-end">
                     <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span>Hi {{ request.user.username }}</span>
+                        <span class="text-info">Hi {{ request.user.username }}</span>
 
                         {% if request.user.profile_image %}
                             <img src="{{ request.user.profile_image.url }}" alt="doctr pic" width="32px" height="32px">
@@ -60,11 +62,11 @@
                         {% endif %}
                     </a>
                     <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                    <li><a class="dropdown-item" href="#">New project...</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li><a class="dropdown-item" href="{% url 'patient:profile' %}">Profile</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
+                        <li><a class="dropdown-item text-muted" href="#">New project...</a></li>
+                        <li><a class="dropdown-item text-muted" href="#">Settings</a></li>
+                        <li><a class="dropdown-item text-info" href="{% url 'patient:profile' %}">Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-info" href="{% url 'logout' %}">Sign out</a></li>
                     </ul>
                 </div>
                 {% else %}

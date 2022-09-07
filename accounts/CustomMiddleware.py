@@ -40,6 +40,8 @@ anonymous_user_permission = [
     'django_rest_passwordreset.views',
     'api.patient_view',
     'django.views.static',
+    'django.views.generic.base',
+    'drf_yasg.views',
 ]
 
 

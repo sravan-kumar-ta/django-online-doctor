@@ -58,7 +58,7 @@
             <div class="dropdown text-end">
                 <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"
                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <span>Hi {{ request.user.username }}</span>
+                    <span class="text-info">Hi {{ request.user.username }}</span>
 
                     {% if request.user.profile_image %}
                     <img src="{{ request.user.profile_image.url }}" alt="doctr pic" width="32px" height="32px">
@@ -71,13 +71,13 @@
                     {% endif %}
                 </a>
                 <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1" style="">
-                    <li><a class="dropdown-item" href="#">New project...</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li><a class="dropdown-item" href="{% url 'doctor:profile' %}">Profile</a></li>
+                    <li><a class="dropdown-item text-muted" href="#">New project...</a></li>
+                    <li><a class="dropdown-item text-muted" href="#">Settings</a></li>
+                    <li><a class="dropdown-item text-info" href="{% url 'doctor:profile' %}">Profile</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
+                    <li><a class="dropdown-item text-info" href="{% url 'logout' %}">Sign out</a></li>
                 </ul>
             </div>
             {% else %}
