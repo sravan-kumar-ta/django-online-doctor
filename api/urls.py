@@ -2,7 +2,13 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from api.blogs_and_users_view import PostViewSet, CreateUserView, UserAPIView, ChangePasswordView
+from api.blogs_and_users_view import (
+    PostViewSet,
+    CreateUserView,
+    UserAPIView,
+    ChangePasswordView,
+    LogoutAPIView,
+)
 from api.doctor_view import DoctorDetailsView, SpecialitiesView
 from api.patient_view import FamilyMemberViewSet, AvailableDateView, AvailableTimeView, AppointmentViewSet
 from api.social_auth_view import GoogleSocialAuthView
@@ -20,6 +26,7 @@ urlpatterns = [
     path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('google/', GoogleSocialAuthView.as_view()),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('logout/', LogoutAPIView.as_view(), name="logout"),
 
     path('dates/<int:doc_id>/', AvailableDateView.as_view()),
     path('times/<int:doc_id>/<str:a_date>/', AvailableTimeView.as_view()),
@@ -36,6 +43,9 @@ urlpatterns = [
 # (PUT) api/change_password/ => change password
 # (POST) api/password_reset/ => reset password
 # (POST) api/password_reset/confirm/ => reset password confirm
+# (POST) api/google/ => google authentication
+# (POST) api/token/refresh/ => refresh token
+# (POST) api/logout/ => logout
 #  -----Blog-----
 # (GET) api/posts/ => get all post
 # (POST) api/posts/ => create new post

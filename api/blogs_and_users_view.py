@@ -1,13 +1,14 @@
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.generics import CreateAPIView, UpdateAPIView
+from rest_framework.generics import CreateAPIView, UpdateAPIView, GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from api.serializers import PostSerializer, UserSerializer, CustomUserSerializer, ChangePasswordSerializer
+from api.serializers import PostSerializer, UserSerializer, CustomUserSerializer, ChangePasswordSerializer, \
+    LogoutSerializer
 from blogs.models import Posts
 
 
@@ -120,3 +121,15 @@ class ChangePasswordView(UpdateAPIView):
             )
         else:
             return Response({'message': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutAPIView(GenericAPIView):
+    serializer_class = LogoutSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
