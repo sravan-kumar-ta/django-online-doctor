@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from api.blogs_and_users_view import PostViewSet, CreateUserView, UserAPIView, ChangePasswordView
 from api.doctor_view import DoctorDetailsView, SpecialitiesView
@@ -19,6 +19,7 @@ urlpatterns = [
     path('change_password/', ChangePasswordView.as_view()),
     path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('google/', GoogleSocialAuthView.as_view()),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     path('dates/<int:doc_id>/', AvailableDateView.as_view()),
     path('times/<int:doc_id>/<str:a_date>/', AvailableTimeView.as_view()),

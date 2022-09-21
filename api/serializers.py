@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from accounts.models import CustomUser
+from api.social_auth import Google
+from api.social_register import register_social_user
 from blogs.models import Posts
 from doctors.models import Doctors, Specialities
 from patients.models import FamilyMembers, Appointments
@@ -37,7 +39,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['username', 'first_name', 'last_name', 'full_name']
         fields += ['email', 'gender', 'role', 'password', 'password2']
-        extra_kwargs = {    
+        extra_kwargs = {
             'password': {'write_only': True},
         }
 
@@ -137,3 +139,22 @@ class DoctorSerializer(serializers.ModelSerializer):
         user = self.context.get('user')
         special = self.context.get('special')
         return Doctors.objects.create(**validated_data, details=user, specialized_in=special)
+
+
+class GoogleSocialAuthSerializer(serializers.Serializer):
+    auth_token = serializers.CharField()
+
+    def validate_auth_token(self, auth_token):
+        user_data = Google.validate(auth_token)
+        try:
+            user_data['sub']
+        except:
+            raise serializers.ValidationError(
+                'The token is invalid or expired. Please login again.'
+            )
+
+        email = user_data['email']
+        name = user_data['name']
+        provider = 'google'
+
+        return register_social_user(provider=provider, email=email, name=name)
