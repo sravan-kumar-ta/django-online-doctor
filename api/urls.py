@@ -5,6 +5,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from api.blogs_and_users_view import PostViewSet, CreateUserView, UserAPIView, ChangePasswordView
 from api.doctor_view import DoctorDetailsView, SpecialitiesView
 from api.patient_view import FamilyMemberViewSet, AvailableDateView, AvailableTimeView, AppointmentViewSet
+from api.social_auth_view import GoogleSocialAuthView
 
 router = DefaultRouter()
 router.register('posts', PostViewSet, basename='posts')
@@ -17,6 +18,7 @@ urlpatterns = [
     path('user/', UserAPIView.as_view()),
     path('change_password/', ChangePasswordView.as_view()),
     path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
+    path('google/', GoogleSocialAuthView.as_view()),
 
     path('dates/<int:doc_id>/', AvailableDateView.as_view()),
     path('times/<int:doc_id>/<str:a_date>/', AvailableTimeView.as_view()),

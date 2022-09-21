@@ -42,6 +42,7 @@ anonymous_user_permission = [
     'django.views.static',
     'django.views.generic.base',
     'drf_yasg.views',
+    'api.social_auth_view',
 ]
 
 
