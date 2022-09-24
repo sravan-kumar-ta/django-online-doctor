@@ -17,7 +17,7 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'first_name', 'last_name', 'email', 'gender', 'password1', 'password2']
+        fields = ['first_name', 'last_name', 'username', 'email', 'gender', 'password1', 'password2']
 
         labels = {
             'email': _('Email'),
@@ -30,7 +30,8 @@ class CustomUserCreationForm(UserCreationForm):
             }),
             'first_name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'First name'
+                'placeholder': 'First name',
+                'autofocus': True
             }),
             'last_name': forms.TextInput(attrs={
                 'class': 'form-control',

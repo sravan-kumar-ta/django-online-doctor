@@ -45,6 +45,7 @@ class LoginView(FormView):
 
 
 def sign_out_view(request):
+    print('haiiiiii')
     logout(request)
     return redirect('patient:home')
 
