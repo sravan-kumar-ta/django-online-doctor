@@ -9,8 +9,14 @@ from api.blogs_and_users_view import (
     ChangePasswordView,
     LogoutAPIView,
 )
+from api.patient_view import (
+    FamilyMemberViewSet,
+    AvailableDateView,
+    AvailableTimeView,
+    AppointmentViewSet,
+    DoctorsListView,
+)
 from api.doctor_view import DoctorDetailsView, SpecialitiesView
-from api.patient_view import FamilyMemberViewSet, AvailableDateView, AvailableTimeView, AppointmentViewSet
 from api.social_auth_view import GoogleSocialAuthView
 
 router = DefaultRouter()
@@ -32,6 +38,7 @@ urlpatterns = [
     path('times/<int:doc_id>/<str:a_date>/', AvailableTimeView.as_view()),
     path('doctor/', DoctorDetailsView.as_view()),
     path('specialities/', SpecialitiesView.as_view()),
+    path('specialities/<int:sp_id>/', DoctorsListView.as_view()),
 ] + router.urls
 
 # http://localhost:8000/...

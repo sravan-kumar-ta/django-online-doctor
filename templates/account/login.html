@@ -41,7 +41,7 @@
             {% endfor %}
             {% endif %}
 
-            <form method="post" action="{% url 'login' %}">
+            <form method="post" action="{% url 'user_login' %}">
                 {% csrf_token %}
                 <div class="d-flex justify-content-center mb-3 text-success">
                     <div class="mx-3">

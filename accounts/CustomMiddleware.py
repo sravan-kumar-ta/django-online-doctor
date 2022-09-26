@@ -57,22 +57,22 @@ class LoginCheckMiddleWare(MiddlewareMixin):
                 if module_name in admin_permissions:
                     pass
                 else:
-                    return HttpResponseRedirect(reverse('logout'))
+                    return HttpResponseRedirect(reverse('user_logout'))
             elif user.role == 'doctor':
                 if module_name in doctor_permissions:
                     pass
                 else:
-                    return HttpResponseRedirect(reverse('logout'))
+                    return HttpResponseRedirect(reverse('user_logout'))
             elif user.role == 'patient':
                 if module_name in patient_permissions:
                     pass
                 else:
-                    return HttpResponseRedirect(reverse('logout'))
+                    return HttpResponseRedirect(reverse('user_logout'))
             else:
-                return HttpResponseRedirect(reverse("login"))
+                return HttpResponseRedirect(reverse("user_login"))
         else:
             if module_name in anonymous_user_permission or request.path == reverse('patient:home'):
                 pass
                 print("inner")
             else:
-                return HttpResponseRedirect(reverse("login"))
+                return HttpResponseRedirect(reverse("user_login"))

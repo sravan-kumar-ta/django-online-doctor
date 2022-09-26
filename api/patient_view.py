@@ -3,15 +3,26 @@ from datetime import datetime, timedelta
 from django.db.models import Q
 from django.utils import timezone
 from rest_framework import status
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated, BasePermission
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from api.serializers import FamilyMembersSerializer, AvailableTimeSerializer, AppointmentSerializer
+from api.serializers import FamilyMembersSerializer, AvailableTimeSerializer, AppointmentSerializer, DoctorSerializer
 from doctors.models import Doctors
 from patients.models import FamilyMembers, Appointments
 from patients.views import getStartEndTime, getAvailableTimes
+
+
+class DoctorsListView(GenericAPIView, ListModelMixin):
+    permission_classes = [IsAuthenticated]
+    serializer_class = DoctorSerializer
+
+    def get(self, request, *args, **kwargs):
+        self.queryset = Doctors.objects.filter(specialized_in=kwargs['sp_id'])
+        return self.list(request, *args, **kwargs)
 
 
 class FamilyMemberViewSet(ModelViewSet):
