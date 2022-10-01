@@ -1,12 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from api.blogs_and_users_view import (
     PostViewSet,
     CreateUserView,
     UserAPIView,
     ChangePasswordView,
+    LoginAPIView,
     LogoutAPIView,
 )
 from api.patient_view import (
@@ -25,26 +26,26 @@ router.register('family_members', FamilyMemberViewSet, basename='family-members'
 router.register('appointment', AppointmentViewSet, basename='appointment')
 
 urlpatterns = [
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('user/register/', CreateUserView.as_view()),
+    path('login/', LoginAPIView.as_view()),
     path('user/', UserAPIView.as_view()),
     path('change_password/', ChangePasswordView.as_view()),
     path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('google/', GoogleSocialAuthView.as_view()),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('logout/', LogoutAPIView.as_view(), name="logout"),
+    path('logout/', LogoutAPIView.as_view()),
 
+    path('specialities/', SpecialitiesView.as_view()),
+    path('doctors/<int:sp_id>/', DoctorsListView.as_view()),
     path('dates/<int:doc_id>/', AvailableDateView.as_view()),
     path('times/<int:doc_id>/<str:a_date>/', AvailableTimeView.as_view()),
     path('doctor/', DoctorDetailsView.as_view()),
-    path('specialities/', SpecialitiesView.as_view()),
-    path('specialities/<int:sp_id>/', DoctorsListView.as_view()),
 ] + router.urls
 
 # http://localhost:8000/...
-# (POST) api/token/ => get token
 #  -----Account-----
-# (POST) api/user/register/ => create user  (No need token, all others should have token)
+# (POST) api/login/ => login with email and password to get token
+# (POST) api/user/register/ => create user
 # (GET) api/user/ => get user
 # (PATCH) api/user/ => update user
 # (PUT) api/change_password/ => change password
@@ -70,6 +71,8 @@ urlpatterns = [
 # (PUT) api/family_members/6/ => update a family member
 # (DELETE) api/family_members/6/ => delete a family member
 #  -----Patient-----
+# (GET) api/specialities/ => get all specialities
+# (GET) api/doctors/7/ => get doctors by specialities
 # (GET) api/dates/7/ => get available all date time
 # (GET) api/times/7/2022-08-11/ => get available date time
 # (POST) api/appointment => create an appointment

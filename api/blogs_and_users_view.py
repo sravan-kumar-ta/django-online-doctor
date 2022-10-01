@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from api.serializers import PostSerializer, UserSerializer, CustomUserSerializer, ChangePasswordSerializer, \
-    LogoutSerializer
+    LogoutSerializer, LoginSerializer
 from blogs.models import Posts
 
 
@@ -80,9 +80,18 @@ class CreateUserView(CreateAPIView):
     serializer_class = CustomUserSerializer
 
 
+class LoginAPIView(GenericAPIView):
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class UserAPIView(APIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = CustomUserSerializer
+    serializer_class = UserSerializer
 
     def get(self, request, *args, **kwargs):
         user = self.request.user
@@ -90,13 +99,17 @@ class UserAPIView(APIView):
         return Response(serializer.data)
 
     def patch(self, request, *args, **kwargs):
-        doctor = request.user
-        serializer = self.serializer_class(instance=doctor, data=request.data, partial=True)
+        serializer = self.serializer_class(
+            instance=request.user,
+            data=request.data,
+            partial=True,
+            context={'user': request.user}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
         else:
-            return Response({'error_message': 'invalid data'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response({'error_message': serializer.errors}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
 class ChangePasswordView(UpdateAPIView):

@@ -1,5 +1,7 @@
+from django.contrib import auth
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -14,8 +16,19 @@ from patients.models import FamilyMembers, Appointments
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'get_full_name', 'role']
-        read_only_fields = fields
+        fields = ['id', 'get_full_name', 'role', 'gender', 'first_name', 'last_name', 'username', 'email']
+
+    def validate(self, attrs):
+        current_user = self.context.get('user')
+        email = attrs.get('email')
+        username = attrs.get('username')
+        user = CustomUser.objects.exclude(id=current_user.id).filter(email=email)
+        if user.exists():
+            raise serializers.ValidationError({'email': "Email already taken"})
+        user = CustomUser.objects.exclude(id=current_user.id).filter(username=username)
+        if user.exists():
+            raise serializers.ValidationError({'username': "Username already taken"})
+        return attrs
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -160,6 +173,39 @@ class GoogleSocialAuthSerializer(serializers.Serializer):
         provider = 'google'
 
         return register_social_user(provider=provider, email=email, name=name)
+
+
+class LoginSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField()
+
+    class Meta:
+        model = CustomUser
+        fields = ['email', 'password', 'username', 'get_full_name', 'role', 'tokens']
+        read_only_fields = ['username', 'role']
+        extra_kwargs = {
+            'password': {'write_only': True},
+        }
+
+    def validate(self, attrs):
+        email = attrs.get('email', '')
+        password = attrs.get('password', '')
+        filtered_user_by_email = CustomUser.objects.filter(email=email)
+        user = auth.authenticate(email=email, password=password)
+
+        if filtered_user_by_email.exists() and filtered_user_by_email[0].auth_provider != 'email':
+            raise AuthenticationFailed(
+                detail='Please continue your login using ' + filtered_user_by_email[0].auth_provider)
+
+        if not user:
+            raise AuthenticationFailed('Invalid credentials, try again')
+
+        return {
+            'role': user.role,
+            'email': user.email,
+            'tokens': user.tokens,
+            'username': user.username,
+            'get_full_name': user.get_full_name,
+        }
 
 
 class LogoutSerializer(serializers.Serializer):
