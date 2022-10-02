@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import CreateAPIView, UpdateAPIView, GenericAPIView
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -12,10 +13,15 @@ from api.serializers import PostSerializer, UserSerializer, CustomUserSerializer
 from blogs.models import Posts
 
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 6
+
+
 class PostViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated, ]
     serializer_class = PostSerializer
     queryset = Posts.objects.all()
+    pagination_class = StandardResultsSetPagination
 
     def create(self, request, *args, **kwargs):
         if request.user.role == 'doctor':
@@ -60,7 +66,7 @@ class PostViewSet(ModelViewSet):
         serializer = UserSerializer(liked_users, many=True)
         return Response(serializer.data)
 
-    @action(['POST'], detail=True)
+    @action(['GET'], detail=True)
     def like_or_dislike(self, request, *args, **kwargs):
         post = self.get_object()
         user = self.request.user
@@ -68,11 +74,20 @@ class PostViewSet(ModelViewSet):
         if user in liked_users:
             post.likes.remove(user)
             post.save()
-            return Response({'message': 'Post disliked'}, status=status.HTTP_200_OK)
+            return Response({'message': 'not liked'}, status=status.HTTP_200_OK)
         else:
             post.likes.add(user)
             post.save()
-            return Response({'message': 'Post liked'}, status=status.HTTP_201_CREATED)
+            return Response({'message': 'liked'}, status=status.HTTP_201_CREATED)
+
+    @action(['GET'], detail=True)
+    def liked_or_not(self, request, *args, **kwargs):
+        post = self.get_object()
+        liked_users = post.likes.all()
+        if request.user in liked_users:
+            return Response({'message': 'liked'})
+        return Response({'message': 'not liked'})
+
 
 
 class CreateUserView(CreateAPIView):
