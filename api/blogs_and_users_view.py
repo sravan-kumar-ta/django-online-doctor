@@ -89,7 +89,6 @@ class PostViewSet(ModelViewSet):
         return Response({'message': 'not liked'})
 
 
-
 class CreateUserView(CreateAPIView):
     model = get_user_model()
     serializer_class = CustomUserSerializer
@@ -122,7 +121,7 @@ class UserAPIView(APIView):
         )
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response({'error_message': serializer.errors}, status=status.HTTP_406_NOT_ACCEPTABLE)
 

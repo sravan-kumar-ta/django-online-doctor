@@ -13,7 +13,7 @@ from rest_framework.viewsets import ModelViewSet
 from api.serializers import FamilyMembersSerializer, AvailableTimeSerializer, AppointmentSerializer, DoctorSerializer
 from doctors.models import Doctors
 from patients.models import FamilyMembers, Appointments
-from patients.views import getStartEndTime, getAvailableTimes
+from patients.views import getStartEndTime
 
 
 class DoctorsListView(GenericAPIView, ListModelMixin):
@@ -44,6 +44,16 @@ class FamilyMemberViewSet(ModelViewSet):
             return Response({'message': 'Only patients can add family members.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
+class DoctorView(GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = DoctorSerializer
+
+    def get(self, request, *args, **kwargs):
+        doctor = Doctors.objects.get(id=kwargs['doc_id'])
+        serializer = self.serializer_class(doctor)
+        return Response(serializer.data)
+
+
 class AvailableDateView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = AvailableTimeSerializer
@@ -54,6 +64,21 @@ class AvailableDateView(APIView):
         return Response(serializer.data)
 
 
+def getAvailableTimes(booked_slots, duration, start_time, end_time):
+    current = start_time
+    count = 0
+    available = {}
+    while True:
+        if current not in booked_slots:
+            # available[count] = {'start': current, 'end': current+timedelta(30)}
+            available[count] = current
+            count += 1
+        current += duration
+        if current + duration > end_time:
+            break
+    return available
+
+
 class AvailableTimeView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = AvailableTimeSerializer
@@ -61,6 +86,7 @@ class AvailableTimeView(APIView):
     def get(self, request, *args, **kwargs):
         doctor_id = kwargs.get('doc_id')
         date = kwargs['a_date']
+
         modified_date = datetime.strptime(date, "%Y-%m-%d").date()
         day = modified_date.isoweekday()
         duration = timedelta(minutes=30)
@@ -83,18 +109,19 @@ class AvailableTimeView(APIView):
 
         available_slots = {}
         if start_time:
-            available_slots = getAvailableTimes(booked_slots, duration, start_time, end_time)
+            count = 0
+            while True:
+                if start_time not in booked_slots:
+                    start = datetime.strftime(start_time, "%I:%M %p")
+                    add_30 = start_time + timedelta(minutes=30)
+                    end = datetime.strftime(add_30, "%I:%M %p")
+                    available_slots[count] = {'start': start, 'end': end}
+                    count += 1
+                start_time += duration
+                if start_time + duration > end_time:
+                    break
 
-        available_times = {}
-        if available_slots:
-            for slot in available_slots:
-                available_times[slot] = available_slots[slot].time()
-        response = {
-            'doctor_id': doctor_id,
-            'date': modified_date,
-            'slots': available_times
-        }
-        return Response({'Response': response})
+        return Response({'slots': available_slots}, status=status.HTTP_200_OK)
 
 
 class IsPatient(BasePermission):

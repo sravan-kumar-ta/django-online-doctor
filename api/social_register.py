@@ -2,6 +2,7 @@ import random
 
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.exceptions import APIException
 
 from accounts.models import CustomUser
 
@@ -36,8 +37,7 @@ def register_social_user(provider, email, name):
         if provider == filtered_user_by_email[0].auth_provider:
             return auth_response(email)
         else:
-            raise AuthenticationFailed(
-                detail='Please continue your login using ' + filtered_user_by_email[0].auth_provider)
+            raise APIException({'error_message': 'Please continue your login using ' + filtered_user_by_email[0].auth_provider})
 
     else:
         user = {

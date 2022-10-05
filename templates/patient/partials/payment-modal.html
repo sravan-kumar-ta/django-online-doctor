@@ -1,11 +1,9 @@
-
-
 <!--Bootstrap Modal-->
 <!--Appointment-->
 
 <div class="modal fade" id="payment-for-{{doctor.id}}" tabindex="-1" aria-labelledby="exampleModalLabel{{doctor.id}}"
     aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-info">
                 <h5 class="modal-title" id="exampleModalLabel{{doctor.id}}">
@@ -16,14 +14,16 @@
             <div class="modal-body">
 
                 <div class="d-flex align-items-center justify-content-center">
-                <h5 class="text-center">Select a date</h5>
-                <small class="text-warning">(You can choose within 10 days from tomorrow)</small> :
+                    <h5 class="text-center">Select a date</h5>
+                    <small class="text-warning">(You can choose within 10 days from tomorrow)</small> :
                 </div>
                 <!-- date querying -->
                 <div class="row">
                     <div class="col-md-6 offset-md-3">
-                        <input class="form-control" type="date" id="app-date-for-{{doctor.id}}" min="0" onclick="setMinMaxDate(event)">
-                        <small class="text-danger" style="display: none;" id="date-error-for-{{doctor.id}}">Please select a date</small>
+                        <input class="form-control" type="date" id="app-date-for-{{doctor.id}}" min="0"
+                            onclick="setMinMaxDate(event)">
+                        <small class="text-danger" style="display: none;" id="date-error-for-{{doctor.id}}">Please
+                            select a date</small>
                     </div>
                     <div class="text-center">
                         <button onclick="dateForAppointment('{{doctor.id}}')" class="btn btn-outline-info my-2">

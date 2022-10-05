@@ -16,6 +16,7 @@ from api.patient_view import (
     AvailableTimeView,
     AppointmentViewSet,
     DoctorsListView,
+    DoctorView
 )
 from api.doctor_view import DoctorDetailsView, SpecialitiesView
 from api.social_auth_view import GoogleSocialAuthView
@@ -37,6 +38,7 @@ urlpatterns = [
 
     path('specialities/', SpecialitiesView.as_view()),
     path('doctors/<int:sp_id>/', DoctorsListView.as_view()),
+    path('doctor/<int:doc_id>/', DoctorView.as_view()),
     path('dates/<int:doc_id>/', AvailableDateView.as_view()),
     path('times/<int:doc_id>/<str:a_date>/', AvailableTimeView.as_view()),
     path('doctor/', DoctorDetailsView.as_view()),
@@ -73,6 +75,7 @@ urlpatterns = [
 #  -----Patient-----
 # (GET) api/specialities/ => get all specialities
 # (GET) api/doctors/7/ => get doctors by specialities
+# (GET) api/doctor/7/ => get doctor
 # (GET) api/dates/7/ => get available all date time
 # (GET) api/times/7/2022-08-11/ => get available date time
 # (POST) api/appointment => create an appointment
