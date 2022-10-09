@@ -1,12 +1,17 @@
+from datetime import datetime
+
+from django.db.models import Q
+from django.utils import timezone
 from rest_framework import status
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated, BasePermission
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.serializers import DoctorSerializer, SpecialitiesSerializer
+from api.serializers import AppointmentSerializer, DoctorSerializer, SpecialitiesSerializer
 from doctors.models import Doctors, Specialities
+from patients.models import Appointments
 
 
 class IsDoctor(BasePermission):
@@ -64,7 +69,7 @@ class DoctorDetailsView(APIView):
         serializer = self.serializer_class(data=request.data, instance=obj, context=context)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
 
@@ -76,3 +81,43 @@ class SpecialitiesView(GenericAPIView, ListModelMixin):
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+
+
+class UpcomingAppointmentView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AppointmentSerializer
+    model = Appointments
+
+    def get_queryset(self):
+        currentTime = timezone.make_aware(datetime.now())
+        queryset = self.model.objects.filter(Q(doctor=self.request.user.doctor) & Q(date_time_end__gt=currentTime))
+        return queryset.order_by('date_time_start')
+
+
+class ActiveAppointmentView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AppointmentSerializer
+    model = Appointments
+
+    def get_queryset(self):
+        currentTime = timezone.make_aware(datetime.now())
+        queryset = self.model.objects.filter(
+            Q(doctor=self.request.user.doctor) &
+            Q(date_time_end__gte=currentTime) &
+            Q(date_time_start__lte=currentTime)
+        )
+        return queryset.order_by('date_time_start')
+
+
+class CompletedAppointmentView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AppointmentSerializer
+    model = Appointments
+
+    def get_queryset(self):
+        currentTime = timezone.make_aware(datetime.now())
+        queryset = self.model.objects.filter(
+            Q(doctor=self.request.user.doctor) &
+            Q(date_time_end__lt=currentTime)
+        )
+        return queryset.order_by('date_time_start')

@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from django.db.models import Q
 from django.utils import timezone
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated, BasePermission
@@ -70,7 +71,6 @@ def getAvailableTimes(booked_slots, duration, start_time, end_time):
     available = {}
     while True:
         if current not in booked_slots:
-            # available[count] = {'start': current, 'end': current+timedelta(30)}
             available[count] = current
             count += 1
         current += duration
@@ -141,6 +141,7 @@ class AppointmentViewSet(ModelViewSet):
         doc_id = request.data.get('doc_id')
         date = request.data.get('date')
         time = request.data.get('time')
+
         if doc_id is None or date is None or time is None:
             return Response({
                 "doc_id": ["This field is required."],
@@ -148,8 +149,9 @@ class AppointmentViewSet(ModelViewSet):
                 "time": ["This field is required."]
             }, status=status.HTTP_406_NOT_ACCEPTABLE)
 
+        # converting date and time
         converted_date = datetime.strptime(date, "%Y-%m-%d").date()
-        converted_time = datetime.strptime(time, "%H:%M:%S").time()
+        converted_time = datetime.strptime(time, "%I:%M %p").time()
         date_time_start = datetime.combine(date=converted_date, time=converted_time)
         date_time_end = timezone.make_aware(date_time_start + timedelta(minutes=30))
 
@@ -191,3 +193,27 @@ class AppointmentViewSet(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         return Response({'message': 'This content is not destroyable'}, status=status.HTTP_403_FORBIDDEN)
+
+    @action(['GET'], detail=False)
+    def get_completed(self, request):
+        appointments = self.get_queryset()
+        currentTime = timezone.make_aware(datetime.now())
+        queryset = appointments.filter(Q(date_time_end__lt=currentTime))
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(['GET'], detail=False)
+    def get_active(self, request):
+        appointments = self.get_queryset()
+        currentTime = timezone.make_aware(datetime.now())
+        queryset = appointments.filter(Q(date_time_end__gte=currentTime) & Q(date_time_start__lte=currentTime))
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(['GET'], detail=False)
+    def get_upcoming(self, request):
+        appointments = self.get_queryset()
+        currentTime = timezone.make_aware(datetime.now())
+        queryset = appointments.filter(Q(date_time_end__gt=currentTime))
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

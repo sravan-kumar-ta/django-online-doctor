@@ -18,6 +18,7 @@ from api.patient_view import (
     DoctorsListView,
     DoctorView
 )
+from api import doctor_view as dr_view
 from api.doctor_view import DoctorDetailsView, SpecialitiesView
 from api.social_auth_view import GoogleSocialAuthView
 
@@ -42,6 +43,10 @@ urlpatterns = [
     path('dates/<int:doc_id>/', AvailableDateView.as_view()),
     path('times/<int:doc_id>/<str:a_date>/', AvailableTimeView.as_view()),
     path('doctor/', DoctorDetailsView.as_view()),
+    path('appointments/upcoming/', dr_view.UpcomingAppointmentView.as_view()),
+    path('appointments/active/', dr_view.ActiveAppointmentView.as_view()),
+    path('appointments/completed/', dr_view.CompletedAppointmentView.as_view()),
+    path('myblogs/', dr_view.MyBlogsView.as_view()),
 ] + router.urls
 
 # http://localhost:8000/...
@@ -86,3 +91,7 @@ urlpatterns = [
 # (GET) api/doctor/ => get doctors details
 # (POST) api/doctor/ => create doctors details
 # (PUT) api/doctor/ => update doctors details
+# (GET) api/appointments/upcoming/ => get upcoming appointments
+# (GET) api/appointments/active/ => get active appointments
+# (GET) api/appointments/completed/ => get completed appointments
+# (GET) api/myblogs/ => get blogs created by requested doctor

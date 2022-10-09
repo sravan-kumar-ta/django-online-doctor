@@ -54,10 +54,10 @@ class PostViewSet(ModelViewSet):
 
     @action(['GET'], detail=False)
     def get_my_posts(self, request):
-        posts = Posts.objects.all()
-        my_posts = posts.filter(author=request.user)
-        serializer = self.get_serializer(my_posts, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        queryset = self.get_queryset().filter(author=request.user)
+        page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
     @action(['GET'], detail=True)
     def get_likes(self, request, *args, **kwargs):

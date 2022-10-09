@@ -113,13 +113,13 @@ class DoctorSerializerForAppointment(serializers.ModelSerializer):
 
 class AppointmentSerializer(serializers.ModelSerializer):
     doctor = DoctorSerializerForAppointment(read_only=True)
+    patient = UserSerializer(read_only=True)
 
     class Meta:
         model = Appointments
-        fields = ('id', 'date', 'time', 'status', 'doctor', 'date_time_start', 'date_time_end')
+        fields = ('id', 'date', 'time', 'status', 'patient', 'doctor', 'date_time_start', 'date_time_end')
         depth = 2
         extra_kwargs = {
-            'date_time_start': {'write_only': True},
             'date_time_end': {'write_only': True},
         }
 
