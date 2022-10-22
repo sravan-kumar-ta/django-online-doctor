@@ -9,6 +9,7 @@ from api.blogs_and_users_view import (
     ChangePasswordView,
     LoginAPIView,
     LogoutAPIView,
+    GetUserAPIView,
 )
 from api.patient_view import (
     FamilyMemberViewSet,
@@ -31,6 +32,7 @@ urlpatterns = [
     path('user/register/', CreateUserView.as_view()),
     path('login/', LoginAPIView.as_view()),
     path('user/', UserAPIView.as_view()),
+    path('user_by_id/<int:id>/', GetUserAPIView.as_view()),
     path('change_password/', ChangePasswordView.as_view()),
     path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('google/', GoogleSocialAuthView.as_view()),
@@ -46,7 +48,6 @@ urlpatterns = [
     path('appointments/upcoming/', dr_view.UpcomingAppointmentView.as_view()),
     path('appointments/active/', dr_view.ActiveAppointmentView.as_view()),
     path('appointments/completed/', dr_view.CompletedAppointmentView.as_view()),
-    path('myblogs/', dr_view.MyBlogsView.as_view()),
 ] + router.urls
 
 # http://localhost:8000/...

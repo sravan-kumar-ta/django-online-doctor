@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
+from accounts.models import CustomUser
 from api.serializers import PostSerializer, UserSerializer, CustomUserSerializer, ChangePasswordSerializer, \
     LogoutSerializer, LoginSerializer
 from blogs.models import Posts
@@ -74,11 +75,11 @@ class PostViewSet(ModelViewSet):
         if user in liked_users:
             post.likes.remove(user)
             post.save()
-            return Response({'message': 'not liked'}, status=status.HTTP_200_OK)
+            return Response({'message': 'not liked', 'total_likes': post.total_likes()}, status=status.HTTP_200_OK)
         else:
             post.likes.add(user)
             post.save()
-            return Response({'message': 'liked'}, status=status.HTTP_201_CREATED)
+            return Response({'message': 'liked', 'total_likes': post.total_likes()}, status=status.HTTP_201_CREATED)
 
     @action(['GET'], detail=True)
     def liked_or_not(self, request, *args, **kwargs):
@@ -87,6 +88,15 @@ class PostViewSet(ModelViewSet):
         if request.user in liked_users:
             return Response({'message': 'liked'})
         return Response({'message': 'not liked'})
+
+    # @action(['GET'], detail=True)
+    # def is_user(self, request, *args, **kwargs):
+    #     post = self.get_object()
+    #     if post.author == request.user:
+    #         return Response({'is_user': true})
+    #     liked_users = post.likes.all()
+    #     serializer = UserSerializer(liked_users, many=True)
+    #     return Response(serializer.data)
 
 
 class CreateUserView(CreateAPIView):
@@ -124,6 +134,16 @@ class UserAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response({'error_message': serializer.errors}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
+class GetUserAPIView(APIView):
+    # permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get(self, request, *args, **kwargs):
+        user = CustomUser.objects.get(id=kwargs['id'])
+        serializer = self.serializer_class(user)
+        return Response(serializer.data)
 
 
 class ChangePasswordView(UpdateAPIView):

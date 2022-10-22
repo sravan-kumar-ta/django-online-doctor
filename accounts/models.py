@@ -26,8 +26,8 @@ class CustomUser(AbstractUser):
     auth_provider = models.CharField(max_length=100, blank=False, null=False,
                                      default=AUTH_PROVIDERS.get('email'))
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    # USERNAME_FIELD = 'email'
+    # REQUIRED_FIELDS = ['username']
 
     def tokens(self):
         refresh = RefreshToken.for_user(self)

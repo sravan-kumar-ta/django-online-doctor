@@ -5,6 +5,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from accounts.CustomBackend import CustomAuth
 from accounts.models import CustomUser
 from api.social_auth import Google
 from api.social_register import register_social_user
@@ -190,7 +191,7 @@ class LoginSerializer(serializers.ModelSerializer):
         email = attrs.get('email', '')
         password = attrs.get('password', '')
         filtered_user_by_email = CustomUser.objects.filter(email=email)
-        user = auth.authenticate(email=email, password=password)
+        user = CustomAuth.authenticate(username=email, password=password)
 
         if filtered_user_by_email.exists() and filtered_user_by_email[0].auth_provider != 'email':
             raise AuthenticationFailed(

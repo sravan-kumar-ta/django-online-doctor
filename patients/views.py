@@ -237,7 +237,7 @@ class AppointmentsListView(ListView):
 
 def demo_appointment(request):
     patient = request.user
-    doctor = Doctors.objects.get(id=1)
+    doctor = Doctors.objects.get(id=11)
     today = datetime.today()
     appointment_date = today.date()
     appointment_time = today.time()
