@@ -11,9 +11,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from api.serializers import FamilyMembersSerializer, AvailableTimeSerializer, AppointmentSerializer, DoctorSerializer
+from api.serializers import AvailableTimeSerializer, AppointmentSerializer, DoctorSerializer
 from doctors.models import Doctors
-from patients.models import FamilyMembers, Appointments
+from patients.models import Appointments
 from patients.views import getStartEndTime
 
 
@@ -24,25 +24,6 @@ class DoctorsListView(GenericAPIView, ListModelMixin):
     def get(self, request, *args, **kwargs):
         self.queryset = Doctors.objects.filter(specialized_in=kwargs['sp_id'])
         return self.list(request, *args, **kwargs)
-
-
-class FamilyMemberViewSet(ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    serializer_class = FamilyMembersSerializer
-
-    def get_queryset(self):
-        return FamilyMembers.objects.filter(relation_with=self.request.user)
-
-    def create(self, request, *args, **kwargs):
-        if request.user.role == 'patient':
-            serializer = self.get_serializer(data=request.data, context={'user': request.user})
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
-        else:
-            return Response({'message': 'Only patients can add family members.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
 class DoctorView(GenericAPIView):

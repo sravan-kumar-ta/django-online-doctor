@@ -9,8 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from accounts.models import CustomUser
-from api.serializers import PostSerializer, UserSerializer, CustomUserSerializer, ChangePasswordSerializer, \
-    LogoutSerializer, LoginSerializer
+from api import serializers
 from blogs.models import Posts
 
 
@@ -20,9 +19,13 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class PostViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated, ]
-    serializer_class = PostSerializer
+    serializer_class = serializers.PostSerializer
     queryset = Posts.objects.all()
     pagination_class = StandardResultsSetPagination
+
+    def list(self, request, *args, **kwargs):
+        self.queryset = self.get_queryset().filter(is_public=True)
+        return super().list(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         if request.user.role == 'doctor':
@@ -61,13 +64,6 @@ class PostViewSet(ModelViewSet):
         return self.get_paginated_response(serializer.data)
 
     @action(['GET'], detail=True)
-    def get_likes(self, request, *args, **kwargs):
-        post = self.get_object()
-        liked_users = post.likes.all()
-        serializer = UserSerializer(liked_users, many=True)
-        return Response(serializer.data)
-
-    @action(['GET'], detail=True)
     def like_or_dislike(self, request, *args, **kwargs):
         post = self.get_object()
         user = self.request.user
@@ -89,23 +85,14 @@ class PostViewSet(ModelViewSet):
             return Response({'message': 'liked'})
         return Response({'message': 'not liked'})
 
-    # @action(['GET'], detail=True)
-    # def is_user(self, request, *args, **kwargs):
-    #     post = self.get_object()
-    #     if post.author == request.user:
-    #         return Response({'is_user': true})
-    #     liked_users = post.likes.all()
-    #     serializer = UserSerializer(liked_users, many=True)
-    #     return Response(serializer.data)
-
 
 class CreateUserView(CreateAPIView):
     model = get_user_model()
-    serializer_class = CustomUserSerializer
+    serializer_class = serializers.CustomUserSerializer
 
 
 class LoginAPIView(GenericAPIView):
-    serializer_class = LoginSerializer
+    serializer_class = serializers.LoginSerializer
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -115,7 +102,7 @@ class LoginAPIView(GenericAPIView):
 
 class UserAPIView(APIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = UserSerializer
+    serializer_class = serializers.UserSerializer
 
     def get(self, request, *args, **kwargs):
         user = self.request.user
@@ -138,7 +125,7 @@ class UserAPIView(APIView):
 
 class GetUserAPIView(APIView):
     # permission_classes = [IsAuthenticated]
-    serializer_class = UserSerializer
+    serializer_class = serializers.UserSerializer
 
     def get(self, request, *args, **kwargs):
         user = CustomUser.objects.get(id=kwargs['id'])
@@ -148,7 +135,7 @@ class GetUserAPIView(APIView):
 
 class ChangePasswordView(UpdateAPIView):
     permission_classes = (IsAuthenticated,)
-    serializer_class = ChangePasswordSerializer
+    serializer_class = serializers.ChangePasswordSerializer
 
     def update(self, request, *args, **kwargs):
         user = request.user
@@ -171,7 +158,7 @@ class ChangePasswordView(UpdateAPIView):
 
 
 class LogoutAPIView(GenericAPIView):
-    serializer_class = LogoutSerializer
+    serializer_class = serializers.LogoutSerializer
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):

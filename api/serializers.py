@@ -1,4 +1,3 @@
-from django.contrib import auth
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
@@ -11,7 +10,7 @@ from api.social_auth import Google
 from api.social_register import register_social_user
 from blogs.models import Posts
 from doctors.models import Doctors, Specialities
-from patients.models import FamilyMembers, Appointments
+from patients.models import Appointments
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -79,16 +78,6 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('old_password', 'new_password')
-
-
-class FamilyMembersSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FamilyMembers
-        fields = ('id', 'relation', 'name', 'age')
-
-    def create(self, validated_data):
-        user = self.context.get('user')
-        return FamilyMembers.objects.create(**validated_data, relation_with=user)
 
 
 class AvailableTimeSerializer(serializers.ModelSerializer):
