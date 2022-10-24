@@ -106,9 +106,7 @@ def available_slot(request):
     duration = timedelta(minutes=30)
 
     # Appointments are taken according to the requested date and time
-    appointments = Appointments.objects.filter(
-        Q(doctor_id=doctor_id) & Q(date=modified_date) & (Q(status="upcoming") | Q(status="ongoing"))
-    )
+    appointments = Appointments.objects.filter(Q(doctor_id=doctor_id) & Q(date=modified_date))
 
     doctor = Doctors.objects.get(pk=doctor_id)
 
@@ -152,7 +150,6 @@ def create_appointment(request, d_id, app_date, start_time):
         time=new_time,
         date_time_start=modified_date,
         date_time_end=app_end_time,
-        status='upcoming'
     )
     appointment.save()
 
@@ -179,7 +176,6 @@ class AppointmentsListView(ListView):
     template_name = 'patient/appointments.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
         currentTime = timezone.make_aware(datetime.now())
         appointments = Appointments.objects.filter(patient=self.request.user)
         app_complete = appointments.filter(Q(date_time_end__lt=currentTime))
@@ -209,7 +205,6 @@ def demo_appointment(request):
         time=appointment_time,
         date_time_start=appointment_time_start,
         date_time_end=appointment_time_end,
-        status='ongoing'
     )
     appointment.save()
 
