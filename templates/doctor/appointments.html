@@ -18,34 +18,30 @@
             {% if appointments %}
             <table class="table table-striped">
                 <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Patient</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Time</th>
-                    {% if filter and filter == 2 %}
-                    <th scope="col">Chat</th>
-                    {% else %}
-                    <th scope="col">Status</th>
-                    {% endif %}
-                </tr>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Patient</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Time</th>
+                        {% if filter and filter == 2 %}
+                        <th scope="col">Chat</th>
+                        {% endif %}
+                    </tr>
                 </thead>
                 <tbody>
-                {% for appointment in appointments %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</td>
-                    <td>{{ appointment.date }}</td>
-                    <td>{{ appointment.time }}</td>
-                    {% if filter and filter == 2 %}
-                    <td>
-                        <a href="{% url 'chat' appointment.id %}" class="btn btn-primary btn-sm">Open Chat</a>
-                    </td>
-                    {% else %}
-                    <td>{{ appointment.status }}</td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
+                    {% for appointment in appointments %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</td>
+                        <td>{{ appointment.date }}</td>
+                        <td>{{ appointment.time }}</td>
+                        {% if filter and filter == 2 %}
+                        <td>
+                            <a href="{% url 'chat' appointment.id %}" class="btn btn-primary btn-sm">Open Chat</a>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
             {% else %}
@@ -56,7 +52,7 @@
     {% else %}
     <span class="mx-3">You need to add some details to get an appointment from the patients.</span>
     <a data-bs-toggle="modal" data-bs-target="#doctor-details" href=""
-       class="border border-danger border-3 text-decoration-none rounded px-2">Add now?</a>
+        class="border border-danger border-3 text-decoration-none rounded px-2">Add now?</a>
     {% endif %}
 </div>
 

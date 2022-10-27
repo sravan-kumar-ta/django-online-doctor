@@ -73,9 +73,7 @@ class AvailableTimeView(APIView):
         duration = timedelta(minutes=30)
 
         # Appointments are taken according to the requested date and time
-        appointments = Appointments.objects.filter(
-            Q(doctor_id=doctor_id) & Q(date=modified_date) & (Q(status="upcoming") | Q(status="ongoing"))
-        )
+        appointments = Appointments.objects.filter(Q(doctor_id=doctor_id) & Q(date=modified_date))
 
         doctor = Doctors.objects.get(pk=doctor_id)
 
@@ -116,7 +114,7 @@ class AppointmentViewSet(ModelViewSet):
     serializer_class = AppointmentSerializer
 
     def get_queryset(self):
-        return Appointments.objects.filter(patient=self.request.user)
+        return Appointments.objects.filter(patient=self.request.user.id)
 
     def create(self, request, *args, **kwargs):
         doc_id = request.data.get('doc_id')
@@ -141,7 +139,6 @@ class AppointmentViewSet(ModelViewSet):
             'time': converted_time,
             'date_time_start': date_time_start,
             'date_time_end': date_time_end,
-            'status': 'upcoming'
         }
         context = {
             'patient': request.user,
@@ -155,14 +152,7 @@ class AppointmentViewSet(ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
 
     def partial_update(self, request, *args, **kwargs):
-        app_status = request.data.get('status') or None
-        if app_status is None:
-            return Response({"status": ["This field is required."]}, status=status.HTTP_406_NOT_ACCEPTABLE)
-        request_data = {
-            'status': app_status
-        }  # just only update the status
-
-        serializer = self.get_serializer(instance=self.get_object(), data=request_data)
+        serializer = self.get_serializer(instance=self.get_object(), data=self.request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)

@@ -16,19 +16,6 @@ class Specialities(models.Model):
 
 
 class Doctors(models.Model):
-    # specialized_choices = (
-    #     ('Cardiology', 'Cardiology'),
-    #     ('Neurology', 'Neurology'),
-    #     ('Ortho / Bone', 'Ortho / Bone'),
-    #     ('Oncology', 'Oncology'),
-    #     ('pediatrics', 'pediatrics'),
-    #     ('ENT', 'ENT'),
-    #     ('Eye Specialist', 'Eye Specialist'),
-    #     ('Physician', 'Physician'),
-    #     ('Dermatology', 'Dermatology'),
-    #     ('Psychiatry', 'Psychiatry'),
-    #     ('Pulmonology', 'Pulmonology'),
-    # )
     details = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='doctor')
     profile_image = models.ImageField(upload_to='images/doctors', null=True)
     specialized_in = models.ForeignKey(Specialities, on_delete=models.CASCADE)
