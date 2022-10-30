@@ -1,9 +1,9 @@
 import random
 
-from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.exceptions import APIException
 
+from accounts.CustomBackend import CustomAuth
 from accounts.models import CustomUser
 
 
@@ -17,7 +17,7 @@ def generate_username(name):
 
 
 def auth_response(email):
-    user = authenticate(email=email, password='Pa$$w0rd!')
+    user = CustomAuth.authenticate(username=email, password='Pa$$w0rd!')
 
     if user:
         return {
@@ -29,7 +29,7 @@ def auth_response(email):
         raise AuthenticationFailed(detail='Something wrong..!')
 
 
-def register_social_user(provider, email, name):
+def register_social_user(provider, email, name, first_name, last_name):
     filtered_user_by_email = CustomUser.objects.filter(email=email)
 
     if filtered_user_by_email.exists():
@@ -42,6 +42,8 @@ def register_social_user(provider, email, name):
     else:
         user = {
             'username': generate_username(name),
+            'first_name': first_name,
+            'last_name': last_name,
             'email': email,
             'password': 'Pa$$w0rd!'
         }

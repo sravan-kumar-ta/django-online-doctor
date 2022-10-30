@@ -1,9 +1,7 @@
 import os.path
 from datetime import timedelta
 from pathlib import Path
-from decouple import config
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -138,7 +136,7 @@ AUTHENTICATION_BACKENDS = [
     'accounts.CustomBackend.CustomAuth',
 ]
 
-SITE_ID = 2
+SITE_ID = 1
 
 SOCIALACCOUNT_QUERY_EMAIL = True
 
@@ -147,16 +145,16 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 
 LOGIN_REDIRECT_URL = 'select-role'
 
-# SMTPAuthenticationError at /accounts/github/login/callback/
-ACCOUNT_EMAIL_VERIFICATION = "none"
+# Determines the e-mail verification method during signup
+# ACCOUNT_EMAIL_VERIFICATION = "none"
 
 # # sent mail
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+# EMAIL_HOST_USER = <your mail id>
+# EMAIL_HOST_PASSWORD = <email password>
 
 # print the mail in console for testing mail message
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -172,7 +170,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=120),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
@@ -190,6 +188,5 @@ SWAGGER_SETTINGS = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:4200",
     "http://localhost:4200",
 ]

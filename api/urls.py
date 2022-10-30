@@ -40,12 +40,12 @@ urlpatterns = [
 # (POST) api/user/register/ => create user
 # (GET) api/user/ => get user
 # (PATCH) api/user/ => update user
-# (PUT) api/change_password/ => change password--------------
+# (PUT) api/change_password/ => change password----
 # (POST) api/password_reset/ => reset password
 # (POST) api/password_reset/confirm/ => reset password confirm
 # (POST) api/google/ => google authentication
 # (POST) api/token/refresh/ => refresh token
-# (POST) api/logout/ => logout--------------
+# (POST) api/logout/ => logout----
 #  -----Blog-----
 # (GET) api/posts/?page=<page-number> => get all post
 # (POST) api/posts/ => create new post

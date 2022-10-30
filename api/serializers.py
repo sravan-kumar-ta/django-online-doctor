@@ -158,11 +158,15 @@ class GoogleSocialAuthSerializer(serializers.Serializer):
                 'The token is invalid or expired. Please login again.'
             )
 
-        email = user_data['email']
-        name = user_data['name']
-        provider = 'google'
+        user_details = {
+            'first_name': user_data['given_name'],
+            'last_name': user_data['family_name'],
+            'email': user_data['email'],
+            'name': user_data['name'],
+            'provider': 'google'
+        }
 
-        return register_social_user(provider=provider, email=email, name=name)
+        return register_social_user(**user_details)
 
 
 class LoginSerializer(serializers.ModelSerializer):

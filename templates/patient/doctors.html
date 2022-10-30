@@ -4,63 +4,48 @@
 {% block content %}
 
 <div class="container px-4 py-5">
-    <h2 class="pb-2 border-bottom">Specialized</h2>
+    <h2 class="pb-2 border-bottom">{{ speciality|title }} Specialized doctors</h2>
 
 
-        {% if doctors %}
-        {% for doctor in doctors %}
+    {% if doctors %}
+    {% for doctor in doctors %}
 
-        <div class="shadow col d-flex align-items-center justify-content-around m-4 p-4 rounded border border-info">
-            <div class="d-flex align-items-center">
-                {% if doctor.profile_image %}
-                    <img src="{{ doctor.profile_image.url }}" class="mx-3" alt="doctr pic" width="65px" height="65px">
-                {% else %}
-                    {% if doctor.details.gender == "male" %}
-                    <img src="{% static 'img/profile_male.svg' %}" class="mx-3" alt="doctr pic" width="65px" height="65px">
-                    {% else %}
-                    <img src="{% static 'img/profile_female.svg' %}" class="mx-3" alt="doctr pic" width="65px" height="65px">
-                    {% endif %}
-                {% endif %}
-                <div>
-                    <div class="d-flex align-items-center">
-                        <h2 class="text-muted">{{ doctor.details.first_name }} {{ doctor.details.last_name }}</h2>
-                        <small>(Mbbs, md)</small>
-                    </div>
-                    <div class="d-flex">
-                    <small class="border bg-success text-white rounded p-1">Malayalam</small>
-                    <small class="border bg-success text-white rounded p-1">English</small>
-                    <small class="border bg-success text-white rounded p-1">Hindi</small>
-                    </div>
-                </div>
-            </div>
-
-            <div class="text-center">
-                <div class="d-flex align-items-center">
-                    Rating:&nbsp
-                    <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i>
-                    &nbsp3/5
-                </div>
-                <h6 class="py-2">12 patients helped</h6>
-                <a href="" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#payment-for-{{doctor.id}}">
-                    Book appointment
-                </a>
+    <div class="shadow col d-flex align-items-center justify-content-around m-4 p-4 rounded border border-info">
+        <div class="d-flex align-items-center">
+            {% if doctor.profile_image %}
+            <img src="{{ doctor.profile_image.url }}" class="mx-3" alt="doctr pic" width="65px" height="65px">
+            {% else %}
+            {% if doctor.details.gender == "male" %}
+            <img src="{% static 'img/profile_male.svg' %}" class="mx-3" alt="doctr pic" width="65px" height="65px">
+            {% else %}
+            <img src="{% static 'img/profile_female.svg' %}" class="mx-3" alt="doctr pic" width="65px" height="65px">
+            {% endif %}
+            {% endif %}
+            <div>
+                <h2 class="text-muted">Dr. {{ doctor.details.first_name }} {{ doctor.details.last_name }}</h2>
             </div>
         </div>
 
-        {% include 'patient/partials/payment-modal.html' %}
-
-        {% endfor %}
-
-        {% else %}
-        <div class="shadow col d-flex align-items-center justify-content-around m-4 p-4 rounded border border-warning">
-            <div class="d-flex align-items-center text-muted">
-                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                <h3 class="mx-3">No doctors available</h3>
-            </div>
+        <div class="text-center">
+            <a href="" class="btn btn-outline-primary" data-bs-toggle="modal"
+               data-bs-target="#payment-for-{{doctor.id}}">
+                Book appointment
+            </a>
         </div>
-        {% endif %}
+    </div>
+
+    {% include 'patient/partials/payment-modal.html' %}
+
+    {% endfor %}
+
+    {% else %}
+    <div class="shadow col d-flex align-items-center justify-content-around m-4 p-4 rounded border border-warning">
+        <div class="d-flex align-items-center text-muted">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+            <h3 class="mx-3">No doctors available</h3>
+        </div>
+    </div>
+    {% endif %}
 </div>
 
 {% endblock %}
@@ -69,173 +54,175 @@
 <script src="{% static 'scripts/patient/date_limits.js' %}"></script>
 <script src="{% static 'scripts/patient/paypal_payment.js' %}"></script>
 <script src="https://www.paypal.com/sdk/js?client-id=AXsdUpNLAWgD0hBa_UyuYtfJprNknazt0VsBz4yoYwAIPwv-BKzstEA86hnwTeqOEIp1MYv2cs9XWAzH&enable-funding=venmo&currency=USD"
-data-sdk-integration-source="button-factory"></script>
+        data-sdk-integration-source="button-factory"></script>
 {% endblock %}
 
 {% block script %}
 function dateForAppointment(id){
-    date = document.querySelector('#app-date-for-'+id).value;
-    document.getElementById('date-error-for-'+id).style.display = "none";
-    if (date == ""){
-        document.getElementById('date-error-for-'+id).style.display = "block";
-        return
-    }
+date = document.querySelector('#app-date-for-'+id).value;
+document.getElementById('date-error-for-'+id).style.display = "none";
+if (date == ""){
+document.getElementById('date-error-for-'+id).style.display = "block";
+return
+}
 
-    target = document.querySelector("#available-times-for-"+id);
-    target.innerText = "Wait a moment....";
-    document.getElementById('loader-wait-for-'+id).style.display = "block";
+target = document.querySelector("#available-times-for-"+id);
+target.innerText = "Wait a moment....";
+document.getElementById('loader-wait-for-'+id).style.display = "block";
 
-    $.ajax({
-        type: 'POST',
-        url: "{% url 'patient:available-slot' %}",
-        data: {
-            type: 'dateSearch',
-            doctor_id: id,
-            date: date
-        },
-        success : (data)=>{
-            target.innerHTML = '';
-            document.getElementById('loader-wait-for-'+id).style.display = "none";
-            console.log(data);
-            if(Object.keys(data.slots).length){
-                showDates(target, data.slots, id);
-            }
-            else
-                showFailure(target, id);
-        }
-    })
+$.ajax({
+type: 'POST',
+url: "{% url 'patient:available-slot' %}",
+data: {
+type: 'dateSearch',
+doctor_id: id,
+date: date
+},
+success : (data)=>{
+target.innerHTML = '';
+document.getElementById('loader-wait-for-'+id).style.display = "none";
+console.log(data);
+if(Object.keys(data.slots).length){
+showDates(target, data.slots, id);
+}
+else
+showFailure(target, id);
+}
+})
 }
 
 
 function showDates(target, slots, doc_id){
-    document.getElementById("date-and-time-for-"+doc_id).innerHTML = '';
+document.getElementById("date-and-time-for-"+doc_id).innerHTML = '';
 
-    head = document.createElement('h3');
-    head.innerText = "Select Time";
-    target.appendChild(head);
-    for(const slot in slots){
-        btn = document.createElement('button');
-        btn.classList.add('btn');
-        btn.classList.add('btn-outline-primary');
-        btn.classList.add('btn-sm');
-        btn.classList.add('m-2');
+head = document.createElement('h3');
+head.innerText = "Select Time";
+target.appendChild(head);
+for(const slot in slots){
+btn = document.createElement('button');
+btn.classList.add('btn');
+btn.classList.add('btn-outline-primary');
+btn.classList.add('btn-sm');
+btn.classList.add('m-2');
 
-        let date_full = new Date(slots[slot]);
-        let time = date_full.getHours() + ":" + date_full.getMinutes();
-        let start_time = date_full.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
-        date_full.setMinutes( date_full.getMinutes() + 30 );
-        let end_time = date_full.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+let date_full = new Date(slots[slot]);
+let time = date_full.getHours() + ":" + date_full.getMinutes();
+let start_time = date_full.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+date_full.setMinutes( date_full.getMinutes() + 30 );
+let end_time = date_full.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
 
-        btn.addEventListener('click', function(){
-            showSelectedDateTime(doc_id, date, start_time, end_time);
-        })
+btn.addEventListener('click', function(){
+showSelectedDateTime(doc_id, date, start_time, end_time);
+})
 
-        btn.innerHTML = `
-            <b>${start_time}</b><br>
-            to<br>
-            <b>${end_time}</b>
-        `;
-        target.appendChild(btn);
-    }
+btn.innerHTML = `
+<b>${start_time}</b><br>
+to<br>
+<b>${end_time}</b>
+`;
+target.appendChild(btn);
+}
 }
 
 function showFailure(target, id){
-    console.log("failuer running");
-    div = document.getElementById("date-and-time-for-"+id);
-    div.innerHTML="";
-    head = document.createElement('h3');
-    head.classList.add("text-danger");
-    head.innerHTML = `<i class="fa fa-frown"></i><br>Not Available on this day!`;
-    target.appendChild(head);
+console.log("failuer running");
+div = document.getElementById("date-and-time-for-"+id);
+div.innerHTML="";
+head = document.createElement('h3');
+head.classList.add("text-danger");
+head.innerHTML = `<i class="fa fa-frown"></i><br>Not Available on this day!`;
+target.appendChild(head);
 }
 
 
 function showSelectedDateTime(id, date, time_start, time_end){
-    let formatted_date = moment(date).format('Do MMMM YYYY');
+let formatted_date = moment(date).format('Do MMMM YYYY');
 
-    document.getElementById("available-times-for-"+id).innerHTML = "";
-    let div = document.getElementById("date-and-time-for-"+id);
-    let charge = document.getElementById("charge-for-doctor-"+id).innerHTML;
-    let paypal = 'myaccounttwo@gmail.com';
+document.getElementById("available-times-for-"+id).innerHTML = "";
+let div = document.getElementById("date-and-time-for-"+id);
+let charge = document.getElementById("charge-for-doctor-"+id).innerHTML;
+let paypal = 'myaccounttwo@gmail.com';
 
-    div.innerHTML="";
-    div.classList.add("d-flex");
-    div.classList.add("justify-content-center");
-    div.innerHTML = `
-    <div class="card border-primary shadow" style="width: 20rem;" id="appointment-card-for-${id}">
-        <div class="card-header bg-primary text-white">
-            <h5 class="card-title text-center">Selected date and Time</h5>
-        </div>
-
-        <div class="card-body">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    <i class="fa fa-calendar-check text-success"></i> &nbsp&nbsp
-                    <b class="text-primary">${formatted_date}</b>
-                </li>
-                <li class="list-group-item">
-                    <i class="fa fa-clock text-success"></i> &nbsp&nbsp
-                    <b class="text-primary">${time_start}</b> to
-                    <b class="text-primary">${time_end}</b>
-                </li>
-                <li class="list-group-item">Doctor fee: <b class="text-primary">${charge}&#8377;</b></li>
-            </ul>
-        </div>
-        <div class="card-footer text-center">
-            <button onclick=\"showPayment('${charge}','${paypal}','${id}','${date}','${time_start}')\" class="btn btn-outline-success" id="pay-to-proceed-{{doctor.id}}">Proceed to Payment</button>
-        </div>
+div.innerHTML="";
+div.classList.add("d-flex");
+div.classList.add("justify-content-center");
+div.innerHTML = `
+<div class="card border-primary shadow" style="width: 20rem;" id="appointment-card-for-${id}">
+    <div class="card-header bg-primary text-white">
+        <h5 class="card-title text-center">Selected date and Time</h5>
     </div>
-    `
+
+    <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <i class="fa fa-calendar-check text-success"></i> &nbsp&nbsp
+                <b class="text-primary">${formatted_date}</b>
+            </li>
+            <li class="list-group-item">
+                <i class="fa fa-clock text-success"></i> &nbsp&nbsp
+                <b class="text-primary">${time_start}</b> to
+                <b class="text-primary">${time_end}</b>
+            </li>
+            <li class="list-group-item">Doctor fee: <b class="text-primary">${charge}&#8377;</b></li>
+        </ul>
+    </div>
+    <div class="card-footer text-center">
+        <button onclick=\"showPayment('${charge}','${paypal}','${id}','${date}','${time_start}')\"
+                class="btn btn-outline-success" id="pay-to-proceed-{{doctor.id}}">Proceed to Payment
+        </button>
+    </div>
+</div>
+`
 }
 
 var showPayment = (charge, paypal_acc, id, date, time) => {
 
-    // clear button section
-    document.getElementById('paypal-button-container-'+id).innerHTML="";
+// clear button section
+document.getElementById('paypal-button-container-'+id).innerHTML="";
 
-    paypal.Buttons({
-        style: {
-            shape: 'pill',
-            color: 'gold',
-            layout: 'vertical',
-            label: 'pay',
-        },
+paypal.Buttons({
+style: {
+shape: 'pill',
+color: 'gold',
+layout: 'vertical',
+label: 'pay',
+},
 
-        createOrder: function (data, actions) {
-            return actions.order.create({
-                purchase_units: [{
-                    amount: {
-                        value: parseFloat(charge),
-                    },
-                    payee : {
-                        email_address : paypal_acc,
-                    }
-                }]
-            });
-        },
+createOrder: function (data, actions) {
+return actions.order.create({
+purchase_units: [{
+amount: {
+value: parseFloat(charge),
+},
+payee : {
+email_address : paypal_acc,
+}
+}]
+});
+},
 
-        onApprove: function (data, actions) {
-            return actions.order.capture().then(function (orderData) {
-                var transaction = orderData.purchase_units[0].payments.captures[0];
-                if(transaction.status === "COMPLETED"){
-                    a = document.querySelector('#successful-payment-'+id);
-                    // a.href = "/create_appointment/ajax/"+id+"/"+date +"/"+time+"/";
-                    let link = "{% url 'patient:create-appointment' 5 555 77777 %}";
-                    let new_link = link.replace("5", id).replace("555", date).replace("77777", time);
-                    a.href = new_link;
-                    a.click();
-                    console.log("Payment Done!");
-                }
-                else{
-                    console.log("payment Failed");
-                }
-            });
-        },
+onApprove: function (data, actions) {
+return actions.order.capture().then(function (orderData) {
+var transaction = orderData.purchase_units[0].payments.captures[0];
+if(transaction.status === "COMPLETED"){
+a = document.querySelector('#successful-payment-'+id);
+// a.href = "/create_appointment/ajax/"+id+"/"+date +"/"+time+"/";
+let link = "{% url 'patient:create-appointment' 5 555 77777 %}";
+let new_link = link.replace("5", id).replace("555", date).replace("77777", time);
+a.href = new_link;
+a.click();
+console.log("Payment Done!");
+}
+else{
+console.log("payment Failed");
+}
+});
+},
 
-        onError: function (err) {
-            console.log(err);
-        }
-    }).render('#paypal-button-container-'+id);
+onError: function (err) {
+console.log(err);
+}
+}).render('#paypal-button-container-'+id);
 }
 
 {% endblock %}

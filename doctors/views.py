@@ -15,12 +15,9 @@ from patients.models import Appointments
 
 
 def add_doctor_details(request):
-    print('function called')
     if request.method == 'POST':
         form = DoctorDetailsForm(request.POST)
-        print('form opened')
         if form.is_valid():
-            print('form valid')
             form.instance.details = request.user
             form.save()
             messages.success(request, 'Successfully added details')
@@ -83,22 +80,22 @@ class AppointmentsView(ListView):
     template_name = 'doctor/appointments.html'
 
     def get_queryset(self):
+        # before adding doctor details there have no doctor table in db, so we can't retrieve appointments
+        # So before adding doctor details always run in try-except block
         try:
-            # before adding doctor details there have no doctor table, so we can't retrieve appointments
-            # So before adding doctor details always run except block
             return self.model.objects.filter(doctor=self.request.user.doctor.id).order_by('-date_time_start')
         except:
             return None
 
 
-def appointments_filter(request, filter):
+def appointments_filter(request, filter_value):
     appointments = Appointments.objects.filter(doctor=request.user.doctor.id)
     currentTime = timezone.make_aware(datetime.now())
-    if filter == 1:
+    if filter_value == 1:
         appointments = appointments.filter(Q(date_time_start__gt=currentTime))
-    if filter == 2:
+    if filter_value == 2:
         appointments = appointments.filter(Q(date_time_end__gte=currentTime) & Q(date_time_start__lte=currentTime))
-    if filter == 3:
+    if filter_value == 3:
         appointments = appointments.filter(Q(date_time_end__lt=currentTime))
 
     context = {

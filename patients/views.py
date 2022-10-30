@@ -35,6 +35,11 @@ class DoctorsListView(ListView):
         specialised_in = Specialities.objects.get(slug=specialised_slug)
         return doctors.filter(specialized_in=specialised_in)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['speciality'] = self.kwargs.get("s_slug")
+        return context
+
 
 class UserProfileView(TemplateView):
     template_name = 'patient/profile.html'

@@ -28,11 +28,12 @@ patient_permissions = [
 ]
 
 anonymous_user_permission = [
-    'allauth.account.views',
     'django.contrib.auth.views',
     'django.contrib.admin.sites',
     'accounts.views',
     'blogs.views',
+    'allauth.account.views',
+    'allauth.socialaccount.views',
     'allauth.socialaccount.providers.oauth2.views',
     'rest_framework_simplejwt.views',
     'api.blogs_and_users_view',
