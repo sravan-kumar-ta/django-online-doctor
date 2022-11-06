@@ -9,7 +9,7 @@ schema_view = swagger_ui(
     openapi.Info(
         title="Online Doctor API",
         default_version='v1.0.0',
-        description="Test description",
+        description="Online doctor API documentation",
     ),
     public=True,
 )

@@ -1,4 +1,6 @@
 from django.contrib.auth import get_user_model
+from django.utils.decorators import method_decorator
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import CreateAPIView, UpdateAPIView, GenericAPIView
@@ -86,6 +88,7 @@ class PostViewSet(ModelViewSet):
         return Response({'message': 'not liked'})
 
 
+@method_decorator(name='post', decorator=swagger_auto_schema(tags=["User"]))
 class CreateUserView(CreateAPIView):
     model = get_user_model()
     serializer_class = serializers.CustomUserSerializer
@@ -94,6 +97,7 @@ class CreateUserView(CreateAPIView):
 class LoginAPIView(GenericAPIView):
     serializer_class = serializers.LoginSerializer
 
+    @swagger_auto_schema(tags=["User Auth"])
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -104,11 +108,13 @@ class UserAPIView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.UserSerializer
 
+    @swagger_auto_schema(tags=["User"])
     def get(self, request, *args, **kwargs):
         user = self.request.user
         serializer = self.serializer_class(user)
         return Response(serializer.data)
 
+    @swagger_auto_schema(tags=["User"])
     def patch(self, request, *args, **kwargs):
         serializer = self.serializer_class(
             instance=request.user,
@@ -127,6 +133,7 @@ class GetUserAPIView(APIView):
     # permission_classes = [IsAuthenticated]
     serializer_class = serializers.UserSerializer
 
+    @swagger_auto_schema(tags=["User"])
     def get(self, request, *args, **kwargs):
         user = CustomUser.objects.get(id=kwargs['id'])
         serializer = self.serializer_class(user)
@@ -161,6 +168,7 @@ class LogoutAPIView(GenericAPIView):
     serializer_class = serializers.LogoutSerializer
     permission_classes = (IsAuthenticated,)
 
+    @swagger_auto_schema(tags=["User Auth"])
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)

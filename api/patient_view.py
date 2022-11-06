@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.decorators import method_decorator
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import GenericAPIView
@@ -21,6 +23,7 @@ class DoctorsListView(GenericAPIView, ListModelMixin):
     permission_classes = [IsAuthenticated]
     serializer_class = DoctorSerializer
 
+    @swagger_auto_schema(tags=["Doctors by specialization"])
     def get(self, request, *args, **kwargs):
         self.queryset = Doctors.objects.filter(specialized_in=kwargs['sp_id'])
         return self.list(request, *args, **kwargs)
@@ -30,6 +33,7 @@ class DoctorView(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = DoctorSerializer
 
+    @swagger_auto_schema(tags=["Doctor Profile"])
     def get(self, request, *args, **kwargs):
         doctor = Doctors.objects.get(id=kwargs['doc_id'])
         serializer = self.serializer_class(doctor)
@@ -40,6 +44,7 @@ class AvailableDateView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = AvailableTimeSerializer
 
+    @swagger_auto_schema(tags=["Create Appointment"])
     def get(self, request, *args, **kwargs):
         doctor = Doctors.objects.get(id=kwargs['doc_id'])
         serializer = self.serializer_class(doctor)
@@ -64,6 +69,10 @@ class AvailableTimeView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = AvailableTimeSerializer
 
+    @swagger_auto_schema(
+        tags=["Create Appointment"],
+        operation_description="You can get the available time slots from here"
+    )
     def get(self, request, *args, **kwargs):
         doctor_id = kwargs.get('doc_id')
         date = kwargs['a_date']
@@ -109,6 +118,14 @@ class IsPatient(BasePermission):
             return True
 
 
+@method_decorator(
+    name='list',
+    decorator=swagger_auto_schema(
+        tags=["Appointments"],
+        operation_description="Get all appointments by requested patient"
+    )
+)
+@method_decorator(name='retrieve', decorator=swagger_auto_schema(tags=["Appointments"]))
 class AppointmentViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated, IsPatient]
     serializer_class = AppointmentSerializer
@@ -116,7 +133,17 @@ class AppointmentViewSet(ModelViewSet):
     def get_queryset(self):
         return Appointments.objects.filter(patient=self.request.user.id)
 
+    @swagger_auto_schema(tags=["Create Appointment"])
     def create(self, request, *args, **kwargs):
+        """
+        POST with doc_id, date and time.
+        example :
+        {
+          "doc_id": 1
+          "date": "2022-11-11",
+          "time": "10:10 AM",
+        }
+        """
         doc_id = request.data.get('doc_id')
         date = request.data.get('date')
         time = request.data.get('time')
@@ -151,6 +178,7 @@ class AppointmentViewSet(ModelViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
 
+    @swagger_auto_schema(tags=["Appointments"])
     def partial_update(self, request, *args, **kwargs):
         serializer = self.get_serializer(instance=self.get_object(), data=self.request.data)
         if serializer.is_valid():
@@ -159,12 +187,15 @@ class AppointmentViewSet(ModelViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(tags=["Appointments"])
     def update(self, request, *args, **kwargs):
         return Response({'message': 'This content is not updatable'}, status=status.HTTP_403_FORBIDDEN)
 
+    @swagger_auto_schema(tags=["Appointments"])
     def destroy(self, request, *args, **kwargs):
         return Response({'message': 'This content is not destroyable'}, status=status.HTTP_403_FORBIDDEN)
 
+    @swagger_auto_schema(tags=["Appointments filters for patients"])
     @action(['GET'], detail=False)
     def get_completed(self, request):
         appointments = self.get_queryset()
@@ -173,6 +204,7 @@ class AppointmentViewSet(ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @swagger_auto_schema(tags=["Appointments filters for patients"])
     @action(['GET'], detail=False)
     def get_active(self, request):
         appointments = self.get_queryset()
@@ -181,6 +213,7 @@ class AppointmentViewSet(ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @swagger_auto_schema(tags=["Appointments filters for patients"])
     @action(['GET'], detail=False)
     def get_upcoming(self, request):
         appointments = self.get_queryset()

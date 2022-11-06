@@ -1,4 +1,5 @@
 from django.urls import path, include
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 
@@ -12,6 +13,12 @@ router = DefaultRouter()
 router.register('posts', views.PostViewSet, basename='posts')
 router.register('appointment', pt_view.AppointmentViewSet, basename='appointment')
 
+tokenRefreshView = swagger_auto_schema(
+        method='post',
+        tags=["User Auth"]
+    )(TokenRefreshView.as_view())
+
+
 urlpatterns = [
     path('user/register/', views.CreateUserView.as_view()),
     path('login/', views.LoginAPIView.as_view()),
@@ -20,7 +27,7 @@ urlpatterns = [
     path('change_password/', views.ChangePasswordView.as_view()),
     path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('google/', GoogleSocialAuthView.as_view()),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/refresh/', tokenRefreshView, name='token_refresh'),
     path('logout/', views.LogoutAPIView.as_view()),
 
     path('specialities/', SpecialitiesView.as_view()),
@@ -72,4 +79,3 @@ urlpatterns = [
 # (GET) api/appointments/upcoming/ => get upcoming appointments1
 # (GET) api/appointments/active/ => get active appointments1
 # (GET) api/appointments/completed/ => get completed appointments1
-# (GET) api/myblogs/ => get blogs created by requested doctor
