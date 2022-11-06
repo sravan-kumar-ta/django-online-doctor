@@ -74,6 +74,5 @@ class LoginCheckMiddleWare(MiddlewareMixin):
         else:
             if module_name in anonymous_user_permission or request.path == reverse('patient:home'):
                 pass
-                print("inner")
             else:
                 return HttpResponseRedirect(reverse("user_login"))

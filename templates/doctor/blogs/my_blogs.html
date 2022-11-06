@@ -36,9 +36,10 @@
                 <div class="col p-4 d-flex flex-column position-static">
                     <h3 class="mb-0">{{ post.title|truncatechars:20 }}</h3>
                     <div class="d-flex text-muted">
-                        <p class="text-capitalize">Dr&nbsp;{{ post.author.first_name }}&nbsp;{{ post.author.last_name
-                            }}</p>
-                        &nbsp;|&nbsp;<p class="text-capitalize">{{ post.date|naturalday }}</p>
+                        <p class="text-capitalize">
+                            Dr&nbsp;{{ post.author.first_name }}&nbsp;{{ post.author.last_name }}
+                        </p>&nbsp;|&nbsp;
+                        <p class="text-capitalize">{{ post.date|naturalday }}</p>
                     </div>
                     <p class="card-text mb-auto">{{ post.content|truncatechars:100 }}</p>
                     <div class="d-flex justify-content-between">

@@ -113,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -149,16 +149,15 @@ LOGIN_REDIRECT_URL = 'select-role'
 # ACCOUNT_EMAIL_VERIFICATION = "none"
 
 # # sent mail
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = <your mail id>
-# EMAIL_HOST_PASSWORD = <email password>
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'srawz101@gmail.com'
+EMAIL_HOST_PASSWORD = 'vtmmotkvdbpbwrvu'
 
-# print the mail in console for testing mail message
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
+# # print the mail in console for testing mail message
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # JWT
 REST_FRAMEWORK = {
@@ -178,13 +177,13 @@ SIMPLE_JWT = {
 
 # API documentation
 SWAGGER_SETTINGS = {
-   'SECURITY_DEFINITIONS': {
-      'Bearer': {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
             'type': 'apiKey',
             'name': 'Authorization',
             'in': 'header'
-      }
-   },
+        }
+    },
 }
 
 CORS_ALLOWED_ORIGINS = [

@@ -167,7 +167,7 @@ def create_appointment(request, d_id, app_date, start_time):
     send_mail(
         'Appointment scheduled',
         email_message,
-        'Online Doctor <your email id>',
+        'Online Doctor',
         [mail_id],
         fail_silently=False,
     )
@@ -196,7 +196,7 @@ class AppointmentsListView(ListView):
 
 def demo_appointment(request):
     patient = request.user
-    doctor = Doctors.objects.get(id=11)
+    doctor = Doctors.objects.get(id=1)
     today = datetime.today()
     appointment_date = today.date()
     appointment_time = today.time()
@@ -222,7 +222,7 @@ def demo_appointment(request):
     send_mail(
         'Appointment scheduled',
         email_message,
-        'Online Doctor <your email id>',
+        'Online Doctor',
         [mail_id],
         fail_silently=False,
     )

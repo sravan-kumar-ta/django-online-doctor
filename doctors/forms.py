@@ -9,7 +9,11 @@ class DoctorDetailsForm(forms.ModelForm):
 
         widgets = {
             'specialized_in': forms.Select(attrs={'class': 'form-control'}),
-            'charge': forms.NumberInput(attrs={'class': 'form-control'}),
+            'charge': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'min': 100,
+                'max': 1500,
+            }),
             'paypal_account': forms.EmailInput(attrs={'class': 'form-control'}),
             'sun_start': forms.TimeInput(attrs={'type': 'time', 'required': False}),
             'sun_end': forms.TimeInput(attrs={'type': 'time', 'required': False}),

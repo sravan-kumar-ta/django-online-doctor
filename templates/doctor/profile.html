@@ -7,19 +7,14 @@
 <div class="container px-4 py-2" id="icon-grid">
     <div class="d-flex">
         <h2 class="pb-2 border-bottom">Profile</h2>
+
         {% if messages %}
-        {% for message in messages %}
-        <div class="alert border m-auto text-success" style="background: #a6ffbe">
-                    <span class="icon">
-                        <i class="fas fa-check"></i>
-                    </span>
-            <span class="text px-5 fw-bold">{{ message }}</span>
-            <button type="button" class="close pr-2 rounded" data-dismiss="alert" aria-label="Close"
-                    style="background: #ccffda; border: 1px solid #ff5959;color: #FF6363">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        {% endfor %}
+            {% for message in messages %}
+                <div class="{% if message.tags == 'error' %} alert-warning {% else %} alert-success {% endif %} m-auto alert alert-dismissible fade show" role="alert">
+                    <strong>{{ message.tags|title }}..!</strong> {{ message }}.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
         {% endif %}
     </div>
     <div class="row px-5">
@@ -83,62 +78,76 @@
             {% if doctor %}
             <div>
                 <table cellpadding="5" class="m-auto">
-                    <tr class="d-flex justify-content-between">
-                        <td>Sunday:</td>
-                        <td class="text-primary text-uppercase">
-                            {{ doctor.sun_start }}
-                            <span class="text-dark text-lowercase">to</span>
-                            {{ doctor.sun_end }}
-                        </td>
-                    </tr>
-                    <tr class="d-flex justify-content-between">
-                        <td>Monday:</td>
-                        <td class="text-primary text-uppercase">
-                            {{ doctor.mon_start }}
-                            <span class="text-dark text-lowercase">to</span>
-                            {{ doctor.mon_end }}
-                        </td>
-                    </tr>
-                    <tr class="d-flex justify-content-between">
-                        <td>Tuesday:</td>
-                        <td class="text-primary text-uppercase">
-                            {{ doctor.tue_start }}
-                            <span class="text-dark text-lowercase">to</span>
-                            {{ doctor.tue_end }}
-                        </td>
-                    </tr>
-                    <tr class="d-flex justify-content-between">
-                        <td>Wednesday:</td>
-                        <td class="text-primary text-uppercase">
-                            {{ doctor.wed_start }}
-                            <span class="text-dark text-lowercase">to</span>
-                            {{ doctor.wed_end }}
-                        </td>
-                    </tr>
-                    <tr class="d-flex justify-content-between">
-                        <td>Thursday:</td>
-                        <td class="text-primary text-uppercase">
-                            {{ doctor.thu_start }}
-                            <span class="text-dark text-lowercase">to</span>
-                            {{ doctor.thu_end }}
-                        </td>
-                    </tr>
-                    <tr class="d-flex justify-content-between">
-                        <td>Friday:</td>
-                        <td class="text-primary text-uppercase">
-                            {{ doctor.fri_start }}
-                            <span class="text-dark text-lowercase">to</span>
-                            {{ doctor.fri_end }}
-                        </td>
-                    </tr>
-                    <tr class="d-flex justify-content-between">
-                        <td>Saturday:</td>
-                        <td class="text-primary text-uppercase">
-                            {{ doctor.sat_start }}
-                            <span class="text-dark text-lowercase">to</span>
-                            {{ doctor.sat_end }}
-                        </td>
-                    </tr>
+                    {% if doctor.sun_start %}
+                        <tr class="d-flex justify-content-between">
+                            <td>Sunday:</td>
+                            <td class="text-primary text-uppercase">
+                                {{ doctor.sun_start }}
+                                <span class="text-dark text-lowercase">to</span>
+                                {{ doctor.sun_end }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if doctor.mon_start %}
+                        <tr class="d-flex justify-content-between">
+                            <td>Monday:</td>
+                            <td class="text-primary text-uppercase">
+                                {{ doctor.mon_start }}
+                                <span class="text-dark text-lowercase">to</span>
+                                {{ doctor.mon_end }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if doctor.tue_start %}
+                        <tr class="d-flex justify-content-between">
+                            <td>Tuesday:</td>
+                            <td class="text-primary text-uppercase">
+                                {{ doctor.tue_start }}
+                                <span class="text-dark text-lowercase">to</span>
+                                {{ doctor.tue_end }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if doctor.wed_start %}
+                        <tr class="d-flex justify-content-between">
+                            <td>Wednesday:</td>
+                            <td class="text-primary text-uppercase">
+                                {{ doctor.wed_start }}
+                                <span class="text-dark text-lowercase">to</span>
+                                {{ doctor.wed_end }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if doctor.thu_start %}
+                        <tr class="d-flex justify-content-between">
+                            <td>Thursday:</td>
+                            <td class="text-primary text-uppercase">
+                                {{ doctor.thu_start }}
+                                <span class="text-dark text-lowercase">to</span>
+                                {{ doctor.thu_end }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if doctor.fri_start %}
+                        <tr class="d-flex justify-content-between">
+                            <td>Friday:</td>
+                            <td class="text-primary text-uppercase">
+                                {{ doctor.fri_start }}
+                                <span class="text-dark text-lowercase">to</span>
+                                {{ doctor.fri_end }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if doctor.sat_start %}
+                        <tr class="d-flex justify-content-between">
+                            <td>Saturday:</td>
+                            <td class="text-primary text-uppercase">
+                                {{ doctor.sat_start }}
+                                <span class="text-dark text-lowercase">to</span>
+                                {{ doctor.sat_end }}
+                            </td>
+                        </tr>
+                    {% endif %}
                 </table>
                 <div class="mt-3">
                     <a href="" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#availableTimeModal">

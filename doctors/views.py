@@ -21,6 +21,8 @@ def add_doctor_details(request):
             form.instance.details = request.user
             form.save()
             messages.success(request, 'Successfully added details')
+        else:
+            messages.error(request, 'Please give the charge amount between 100 and 1500')
     return redirect('doctor:profile')
 
 
@@ -56,12 +58,15 @@ def update_details(request):
     paypal = request.POST.get('paypal')
     special = Specialities.objects.get(id=special_id)
 
-    doctor = Doctors.objects.get(details_id=request.user.id)
-    doctor.specialized_in = special
-    doctor.charge = charge
-    doctor.paypal_account = paypal
-    doctor.save()
-    messages.success(request, "Your account details updated..")
+    if 100 < int(charge) < 1500:
+        doctor = Doctors.objects.get(details_id=request.user.id)
+        doctor.specialized_in = special
+        doctor.charge = charge
+        doctor.paypal_account = paypal
+        doctor.save()
+        messages.success(request, "Your account details updated..")
+    else:
+        messages.error(request, "Please give the amount between 100 and 1500")
     return redirect('doctor:profile')
 
 

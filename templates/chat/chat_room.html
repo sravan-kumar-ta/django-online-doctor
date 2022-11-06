@@ -65,7 +65,7 @@
         <div class="position-absolute top-50 start-50 translate-middle border border-info rounded col-lg-6 col-md-10 col-sm-12"
             style="height: 80%;">
             <div style="height: 10%;" class="border d-flex align-items-center justify-content-between">
-                {% if request.user.role == 'doctor' %}z
+                {% if request.user.role == 'doctor' %}
                     <h5 class="mx-3">{{ patient }}</h5>
                     <a href="{% url 'doctor:profile' %}" class="btn btn-outline-danger btn-sm mx-3">Close chat</a>
                 {% else %}
@@ -105,8 +105,9 @@
             messageInputDom.value = '';
         };
 
+        var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws"
         const chatSocket = new WebSocket(
-            'ws://' +
+            ws_scheme + '://' +
             window.location.host +
             '/ws/chat/' +
             roomName +

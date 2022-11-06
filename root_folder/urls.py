@@ -6,12 +6,12 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view as swagger_ui
 
 schema_view = swagger_ui(
-   openapi.Info(
-      title="Online Doctor API",
-      default_version='v1.0.0',
-      description="Test description",
-   ),
-   public=True,
+    openapi.Info(
+        title="Online Doctor API",
+        default_version='v1.0.0',
+        description="Test description",
+    ),
+    public=True,
 )
 
 urlpatterns = [

@@ -11,3 +11,6 @@ class Appointments(models.Model):
     time = models.TimeField(null=True, blank=True)
     date_time_start = models.DateTimeField(null=True, blank=True)
     date_time_end = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return str(self.pk) + ' | ' + str(self.doctor.details.first_name) + ' | ' + str(self.patient.first_name)
