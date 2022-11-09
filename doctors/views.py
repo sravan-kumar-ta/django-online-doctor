@@ -105,7 +105,7 @@ def appointments_filter(request, filter_value):
 
     context = {
         'appointments': appointments,
-        'filter': filter
+        'filter': filter_value
     }
 
     return render(request, 'doctor/appointments.html', context)

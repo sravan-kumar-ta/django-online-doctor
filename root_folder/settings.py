@@ -113,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Kolkata'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -121,9 +121,16 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
+# Static Files
+STATIC_URL = 'static/'
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
+
+MEDIA_URL = 'media/'
+
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -149,15 +156,15 @@ LOGIN_REDIRECT_URL = 'select-role'
 # ACCOUNT_EMAIL_VERIFICATION = "none"
 
 # # sent mail
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'srawz101@gmail.com'
-EMAIL_HOST_PASSWORD = 'vtmmotkvdbpbwrvu'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = '<Your mail id>'
+# EMAIL_HOST_PASSWORD = '<Email password>'
 
-# # print the mail in console for testing mail message
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# print the mail in console for testing mail message
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # JWT
 REST_FRAMEWORK = {
