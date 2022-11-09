@@ -23,7 +23,7 @@
 
   ```
   python -m venv venv
-  venv/scripts/activate.bat
+  venv\scripts\activate.bat
   ``` 
 * Then install the dependencies:
   ```
